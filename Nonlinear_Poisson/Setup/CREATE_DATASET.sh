@@ -9,13 +9,13 @@ if [ $newchol -eq 1 ]; then
         fi
     fi
 fi
-#if [ $failed -eq 0 ]; then
-#    python Generate_Samples.py
-#    if [ $? -ne 0 ]; then
-#        failed=1
-#        fail_file="Generate_Samples.py"
-#    fi
-#fi
+if [ $failed -eq 0 ]; then
+    python Generate_Samples.py
+    if [ $? -ne 0 ]; then
+        failed=1
+        fail_file="Generate_Samples.py"
+    fi
+fi
 if [ $failed -eq 0 ]; then
     python Convert_Samples.py
     if [ $? -ne 0 ]; then

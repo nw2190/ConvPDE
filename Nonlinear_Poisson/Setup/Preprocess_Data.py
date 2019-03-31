@@ -7,27 +7,10 @@ import multiprocessing
 from flags import getFlags
 
 
-def preprocess_data(start_index, data_count, data_dir, mesh_dir, soln_dir, RESCALE=False):
-    LORES = True
-    HIRES = True
+def preprocess_data(start_index, data_count, data_dir, mesh_dir, soln_dir, RESCALE=False, use_hires=False):
+
     for i in range(start_index, start_index + data_count):
-        if LORES:
-            mesh = np.load(mesh_dir + 'mesh_' + str(i) + '.npy')
-            out_of_domain = (mesh == 0)
-
-            data = np.load(data_dir + 'data_' + str(i) + '.npy')
-            data[out_of_domain] = 0.0
-            soln = np.load(soln_dir + 'solution_' + str(i) + '.npy')
-
-            if RESCALE:
-                ## Rescale data and solutions
-                scaling = np.max(np.abs(data))
-                data = data/scaling
-                soln = soln/scaling
-
-            np.save(data_dir + 'data_' + str(i) + '.npy', data)
-            np.save(soln_dir + 'solution_' + str(i) + '.npy', soln)
-        if HIRES:
+        if use_hires:
             hires_mesh = np.load(mesh_dir + 'hires_mesh_' + str(i) + '.npy')
             hires_out_of_domain = (hires_mesh == 0)
 
@@ -43,6 +26,22 @@ def preprocess_data(start_index, data_count, data_dir, mesh_dir, soln_dir, RESCA
 
             np.save(data_dir + 'hires_data_' + str(i) + '.npy', hires_data)
             np.save(soln_dir + 'hires_solution_' + str(i) + '.npy', hires_soln)
+        else:
+            mesh = np.load(mesh_dir + 'mesh_' + str(i) + '.npy')
+            out_of_domain = (mesh == 0)
+
+            data = np.load(data_dir + 'data_' + str(i) + '.npy')
+            data[out_of_domain] = 0.0
+            soln = np.load(soln_dir + 'solution_' + str(i) + '.npy')
+
+            if RESCALE:
+                ## Rescale data and solutions
+                scaling = np.max(np.abs(data))
+                data = data/scaling
+                soln = soln/scaling
+
+            np.save(data_dir + 'data_' + str(i) + '.npy', data)
+            np.save(soln_dir + 'solution_' + str(i) + '.npy', soln)
 
 
 if __name__ == '__main__':
@@ -54,7 +53,7 @@ if __name__ == '__main__':
     #hires_mesh = np.load(FLAGS.mesh_dir + 'hires_mesh_' + str(0) + '.npy')
 
     def preprocess(d):
-        preprocess_data(d, int(FLAGS.data_count/subdivision), FLAGS.data_dir, FLAGS.mesh_dir, FLAGS.soln_dir)
+        preprocess_data(d, int(FLAGS.data_count/subdivision), FLAGS.data_dir, FLAGS.mesh_dir, FLAGS.soln_dir, use_hires=FLAGS.use_hires)
 
     # Create multiprocessing pool
     NumProcesses = FLAGS.cpu_count

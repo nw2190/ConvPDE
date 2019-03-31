@@ -20,34 +20,34 @@ def _floats_feature(value):
     return tf.train.Feature(float_list=tf.train.FloatList(value=[float(x) for x in value]))
 
 # Define function for creating tfrecords file for dataset
-def write_tfrecords(indices, start_file_count, file_count, data_dir="./", tfrecord_dir="./", training=True, examples_per_file=5000, use_default_res=False):
+def write_tfrecords(indices, start_file_count, file_count, data_dir="./", tfrecord_dir="./", training=True, examples_per_file=5000, use_hires=False):
 
     current_indices = indices[(file_count - start_file_count)*examples_per_file : (file_count-start_file_count+1)*examples_per_file]
 
-    if use_default_res:
-        if training:
-            filename = os.path.join(tfrecord_dir, 'training-' + str(file_count) + '.tfrecords')
-        else:
-            filename = os.path.join(tfrecord_dir, 'validation-' + str(file_count) + '.tfrecords')
-    else:
+    if use_hires:
         if training:
             filename = os.path.join(tfrecord_dir, 'hires_training-' + str(file_count) + '.tfrecords')
         else:
             filename = os.path.join(tfrecord_dir, 'hires_validation-' + str(file_count) + '.tfrecords')
+    else:
+        if training:
+            filename = os.path.join(tfrecord_dir, 'training-' + str(file_count) + '.tfrecords')
+        else:
+            filename = os.path.join(tfrecord_dir, 'validation-' + str(file_count) + '.tfrecords')
             
     writer = tf.python_io.TFRecordWriter(filename)
 
     # Save dataset in .tfrecords file
     for i in current_indices:
 
-        if use_default_res:
-            data = np.load(data_dir + "Data/data_" + str(i) + ".npy").flatten().astype(np.float32)
-            mesh = np.load(data_dir + "Meshes/mesh_" + str(i) + ".npy").astype(np.uint8)
-            soln = np.load(data_dir + "Solutions/solution_" + str(i) + ".npy").flatten().astype(np.float32)
-        else:
+        if use_hires:
             data = np.load(data_dir + "Data/hires_data_" + str(i) + ".npy").flatten().astype(np.float32)
             mesh = np.load(data_dir + "Meshes/hires_mesh_" + str(i) + ".npy").astype(np.uint8)
             soln = np.load(data_dir + "Solutions/hires_solution_" + str(i) + ".npy").flatten().astype(np.float32)
+        else:
+            data = np.load(data_dir + "Data/data_" + str(i) + ".npy").flatten().astype(np.float32)
+            mesh = np.load(data_dir + "Meshes/mesh_" + str(i) + ".npy").astype(np.uint8)
+            soln = np.load(data_dir + "Solutions/solution_" + str(i) + ".npy").flatten().astype(np.float32)
 
         # Create a feature
         feature = {'data': _floats_feature(data.tolist()),
@@ -74,10 +74,10 @@ if __name__ == '__main__':
     data_count = FLAGS.data_count * FLAGS.cov_count
     examples_per_file = 2500
 
-    use_default_res = FLAGS.use_default_res
+    use_hires = FLAGS.use_hires
     
     def write(d):
-        write_tfrecords(d[0], d[1], d[2], data_dir="./", tfrecord_dir=FLAGS.tfrecord_dir, training=d[3], examples_per_file=examples_per_file, use_default_res=use_default_res)
+        write_tfrecords(d[0], d[1], d[2], data_dir="./", tfrecord_dir=FLAGS.tfrecord_dir, training=d[3], examples_per_file=examples_per_file, use_hires=use_hires)
 
     # Shuffle data and create training and validation sets
     indices = [n for n in range(FLAGS.data_start_count,FLAGS.data_start_count + data_count)]
@@ -85,13 +85,12 @@ if __name__ == '__main__':
     t_indices = indices[0 : int(np.floor(0.8 * data_count))]
     v_indices = indices[int(np.floor(0.8 * data_count)) : ]
 
-    if use_default_res:
-        np.save(os.path.join(FLAGS.tfrecord_dir, "t_indices_" + str(FLAGS.data_start_count)), t_indices)
-        np.save(os.path.join(FLAGS.tfrecord_dir, "v_indices_" + str(FLAGS.data_start_count)), v_indices)
-    else:
+    if use_hires:
         np.save(os.path.join(FLAGS.tfrecord_dir, "hires_t_indices_" + str(FLAGS.data_start_count)), t_indices)
         np.save(os.path.join(FLAGS.tfrecord_dir, "hires_v_indices_" + str(FLAGS.data_start_count)), v_indices)
-
+    else:
+        np.save(os.path.join(FLAGS.tfrecord_dir, "t_indices_" + str(FLAGS.data_start_count)), t_indices)
+        np.save(os.path.join(FLAGS.tfrecord_dir, "v_indices_" + str(FLAGS.data_start_count)), v_indices)
         
     t_count = int(np.floor(0.8 * data_count))
     v_count = data_count - t_count

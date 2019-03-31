@@ -35,9 +35,6 @@ if __name__ == '__main__':
     start_indices = [FLAGS.data_start_count + n for n in start_indices]
     filenames = ['./Cholesky/L' + str(n) + '.npy' for n in range(0,FLAGS.cov_count)]
 
-    # Only use high length scale Cholesky factors
-    #filenames = ['./Cholesky/L' + str(np.mod(n,10)+10) + '.npy' for n in range(0,FLAGS.cov_count)]
-
     #print([d for d in zip(start_indices, filenames)])
     #pool.map(sample, [d for d in zip(start_indices, filenames)])
     print('\n [ Sampling Functions ]\n')
