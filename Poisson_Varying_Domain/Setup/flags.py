@@ -7,7 +7,7 @@ def getFlags():
     parser = ArgumentParser(description='Argument Parser')
 
     # Specify which data resolution to write to TFRecords
-    parser.add_argument("--use_default_res", default=False, action="store_true", help="Use standard data resolution for tfrecords")
+    parser.add_argument("--use_hires", default=False, action="store_true", help="Use high resolution data arrays for training")
     
     # Specify CPU count
     parser.add_argument("--cpu_count", default=8, type=int, help="Number of CPUs available for parallelization")
