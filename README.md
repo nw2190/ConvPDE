@@ -14,10 +14,12 @@ This code provides examples for training convolutional neural networks for appro
 ## Dataset Creation
 
 ### Problem Setups    
-Three distinct problem setups are available for training:
-* `Circle/` - Poisson equation with the domain fixed as a unit circle
-* `Varying_Domain/` - Poisson equation with both the domain and source term varying
-* `Nonlinear/` - Nonlinear partial differential equation with varying domain and source term
+Five predefined problem setups are provided for training the convolutional network:
+* `Poisson_Circle/` - Poisson equation with the domain fixed as a unit circle
+* `Poisson_Varying_Domain/` - Poisson equation with both the domain and source term varying
+* `Nonlinear_Poisson/` - Nonlinear partial differential equation with varying domain and source term
+* `Variable_Coefficient/` - Variable coefficient elliptic differential operator
+* `Neumann_BC/` - Poisson equation with Neumann boundary conditions
 
 <p align="center">
   <img width="250" src="figures/domain.png" style="margin: auto;">
@@ -113,10 +115,10 @@ $ tensorboard --logdir Model/logs/
 
 ### Freezing Models
 
-Trained models can be frozen using the utility files in the `Frozen/` subdirectories:
+Trained models can be frozen using the utility files in the `Evaluate/` subdirectories:
 
 ```
-$ cd Circle/Frozen/
+$ cd Circle/Evaluate/
 
 $ python Freeze.py --model_dir ../Model/
 ```
@@ -127,7 +129,7 @@ $ python Freeze.py --model_dir ../Model/
 Once a trained model has been frozen to a protocol buffer file, the network predictions can be compared with true solutions using the `Plot_Predictions.py` file:
 
 ```
-$ cd Circle/Frozen/
+$ cd Circle/Evaluate/
 
 $ python Plot_Prediction.py --model_dir ../Model/ --ID 1
 ```
@@ -141,7 +143,7 @@ $ python Plot_Prediction.py --model_dir ../Model/ --ID 1
 Multiple prediction/solution comparison plots can be saved via:
 
 ```
-$ cd Circle/Frozen/
+$ cd Circle/Evaluate/
 
 $ python Save_Plots.py --model_dir ../Model/
 ```
