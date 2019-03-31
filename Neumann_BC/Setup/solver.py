@@ -202,36 +202,36 @@ def FEM_solver(resolution, mesh_resolution, mesh_ID, data_ID, use_hires=False):
 
 
 
-    """
-    ## Save hi-res solution array
-    new_resolution = 2*resolution
-    new_step = 1.0/new_resolution
-    new_start = 0.0 + new_step/2.0
-        
-    
-    new_vals = np.zeros([new_resolution,new_resolution])
-    for i in range(0,new_resolution):
-        for j in range(0,new_resolution):
-            x_coord = new_start + i*new_step
-            y_coord = new_start + (new_resolution - 1 - j)*new_step
-            pt = Point(x_coord, y_coord)
-            cell_id = mesh.bounding_box_tree().compute_first_entity_collision(pt)
-            #if mesh.bounding_box_tree().collides(pt):
-            if cell_id < mesh.num_cells():
-                try:
-                    # Interior points can be evaluated directly
-                    new_vals[j,i] = u(pt)
-                except:
-                    # Points near the boundary have issues due to rounding...
-                    cell = Cell(mesh, cell_id)
-                    coords = cell.get_vertex_coordinates()
-                    new_x_coord = coords[0]
-                    new_y_coord = coords[1]
-                    new_pt = Point(new_x_coord, new_y_coord)
-                    new_vals[j,i] = u(new_pt)
-                    
-    np.save(hires_solution_filename, new_vals)
-    """
+    if use_hires:
+        ## Save hi-res solution array
+        new_resolution = 2*resolution
+        new_step = 1.0/new_resolution
+        new_start = 0.0 + new_step/2.0
+
+
+        new_vals = np.zeros([new_resolution,new_resolution])
+        for i in range(0,new_resolution):
+            for j in range(0,new_resolution):
+                x_coord = new_start + i*new_step
+                y_coord = new_start + (new_resolution - 1 - j)*new_step
+                pt = Point(x_coord, y_coord)
+                cell_id = mesh.bounding_box_tree().compute_first_entity_collision(pt)
+                #if mesh.bounding_box_tree().collides(pt):
+                if cell_id < mesh.num_cells():
+                    try:
+                        # Interior points can be evaluated directly
+                        new_vals[j,i] = u(pt)
+                    except:
+                        # Points near the boundary have issues due to rounding...
+                        cell = Cell(mesh, cell_id)
+                        coords = cell.get_vertex_coordinates()
+                        new_x_coord = coords[0]
+                        new_y_coord = coords[1]
+                        new_pt = Point(new_x_coord, new_y_coord)
+                        new_vals[j,i] = u(new_pt)
+
+        np.save(hires_solution_filename, new_vals)
+
 
     
     # Cleanup to avoid continual memory increase
@@ -241,7 +241,7 @@ def FEM_solver(resolution, mesh_resolution, mesh_ID, data_ID, use_hires=False):
     
 
 
-def gen_soln(current_data, total_count, resolution, mesh_resolution, use_hires=use_hires):
+def gen_soln(current_data, total_count, resolution, mesh_resolution, use_hires=False):
     #set_log_level(ERROR)
     set_log_level(40)
     time_step = 1
