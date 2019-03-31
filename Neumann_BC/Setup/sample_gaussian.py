@@ -193,7 +193,6 @@ def convert_samples(data_count, current_data, resolution=64):
         #new_data_function_filename = './Data/hires_data_' + str(n) + '.xml'
         #File(new_data_function_filename) << new_f
 
-        """
         ## Save hi-res data array
         new_resolution = 2*resolution
         step = 1.0/new_resolution
@@ -222,11 +221,11 @@ def convert_samples(data_count, current_data, resolution=64):
 
         hires_filename = './Data/hires_data_' + str(n) + '.npy'
         np.save(hires_filename, vals)
-        """
 
 
 
-def fast_convert_samples(data_count, current_data, resolution=64):
+
+def fast_convert_samples(data_count, current_data, resolution=64, use_hires=False):
     #set_log_level(ERROR)
     set_log_level(40)
     #print("\n\nConverting samples...")
@@ -260,11 +259,10 @@ def fast_convert_samples(data_count, current_data, resolution=64):
         data_function_filename = './Data/data_' + str(n) + '.xml'
         File(data_function_filename) << f
 
-        """
-        ## Save hi-res data array
-        new_resolution = 2*resolution
-        data_array = np.reshape(data, [resolution, resolution])
-        resized_array = cv2.resize(data_array, (new_resolution, new_resolution), interpolation = cv2.INTER_CUBIC) 
-        hires_filename = './Data/hires_data_' + str(n) + '.npy'
-        np.save(hires_filename, resized_array)
-        """
+        if use_hires:
+            ## Save hi-res data array
+            new_resolution = 2*resolution
+            data_array = np.reshape(data, [resolution, resolution])
+            resized_array = cv2.resize(data_array, (new_resolution, new_resolution), interpolation = cv2.INTER_CUBIC) 
+            hires_filename = './Data/hires_data_' + str(n) + '.npy'
+            np.save(hires_filename, resized_array)
