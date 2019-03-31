@@ -89,7 +89,7 @@ This will create four subdirectories containing the generated dataset files:
 
 along with the preprocessed dataset example written to TFRecords files in the `./DATA/` directory.
 
-**Note:** The `./Cholesky/` files can be reused for all three problem setups (e.g. using symbolic links).  
+**Note:** The `./Cholesky/` files can be reused for all five problem setups (e.g. using symbolic links).  
 
 
 ## Training Models
@@ -98,9 +98,9 @@ Once the datasets have been created, models can be trained via:
 
 
 ```
-$ cd Circle/
+$ cd Poisson_Circle/
 
-$ python HiRes_VAE.py --learning_rate 0.001 --z_dim 200
+$ python main.py --learning_rate 0.001 --z_dim 200
 ```
 
 The training progress can be monitored using TensorBoard:
@@ -118,7 +118,7 @@ $ tensorboard --logdir Model/logs/
 Trained models can be frozen using the utility files in the `Evaluate/` subdirectories:
 
 ```
-$ cd Circle/Evaluate/
+$ cd Poisson_Circle/Evaluate/
 
 $ python Freeze.py --model_dir ../Model/
 ```
@@ -129,7 +129,7 @@ $ python Freeze.py --model_dir ../Model/
 Once a trained model has been frozen to a protocol buffer file, the network predictions can be compared with true solutions using the `Plot_Predictions.py` file:
 
 ```
-$ cd Circle/Evaluate/
+$ cd Poisson_Circle/Evaluate/
 
 $ python Plot_Prediction.py --model_dir ../Model/ --ID 1
 ```
@@ -143,7 +143,7 @@ $ python Plot_Prediction.py --model_dir ../Model/ --ID 1
 Multiple prediction/solution comparison plots can be saved via:
 
 ```
-$ cd Circle/Evaluate/
+$ cd Poisson_Circle/Evaluate/
 
 $ python Save_Plots.py --model_dir ../Model/
 ```
