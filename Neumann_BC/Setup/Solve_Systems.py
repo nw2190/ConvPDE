@@ -23,7 +23,7 @@ if __name__ == '__main__':
     #subdivision = 1
     
     def sample(d):
-        gen_soln(d, int(FLAGS.data_count/subdivision), FLAGS.resolution, FLAGS.mesh_resolution)
+        gen_soln(d, int(FLAGS.data_count/subdivision), FLAGS.resolution, FLAGS.mesh_resolution, use_hires=FLAGS.use_hires)
 
     # Create multiprocessing pool
     NumProcesses = FLAGS.cpu_count
