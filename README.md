@@ -154,6 +154,6 @@ $ python Plot_Prediction.py --model_dir ../Model/ --ID 1 --show_error
 ```
 
 <p align="center">
-  <img width="700" src="figures/Prediction_Plot.png" style="margin: auto;">
+  <img width="700" src="figures/Error_Plot.png" style="margin: auto;">
 </p>
 
