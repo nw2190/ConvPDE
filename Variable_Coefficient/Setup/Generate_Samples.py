@@ -14,7 +14,7 @@ if __name__ == '__main__':
     FLAGS = getFlags()
 
     def sample(d):
-        sample_gaussian(FLAGS.data_count, d[0], resolution=FLAGS.resolution, filename=d[1], GEN_STIFFNESS=FLAGS.gen_stiffness)
+        sample_gaussian(FLAGS.data_count, d[0], resolution=FLAGS.resolution, filename=d[1], GEN_STIFFNESS=FLAGS.gen_stiffness, use_hires=FLAGS.use_hires)
 
     # Check data directories
     if not os.path.exists(FLAGS.data_dir):

@@ -97,7 +97,7 @@ def generate_covariance(a_val, b_val, resolution=64, filename='L.npy', alpha=1.0
     compute_cholesky(K, filename)
 
 
-def sample_gaussian(data_count, current_data, resolution=64, filename="L.npy", GEN_STIFFNESS=False):
+def sample_gaussian(data_count, current_data, resolution=64, filename="L.npy", GEN_STIFFNESS=False, use_hires=False):
 
     #print("\nSampling Gaussian processes...")
 
@@ -208,40 +208,40 @@ def convert_samples(data_count, current_data, resolution=64):
         #new_data_function_filename = './Data/hires_data_' + str(n) + '.xml'
         #File(new_data_function_filename) << new_f
 
-        """
-        ## Save hi-res data array
-        new_resolution = 2*resolution
-        step = 1.0/new_resolution
-        start = 0.0 + step/2.0
+        if use_hires:
+            ## Save hi-res data array
+            new_resolution = 2*resolution
+            step = 1.0/new_resolution
+            start = 0.0 + step/2.0
 
-        vals = np.zeros([new_resolution,new_resolution])
-        for i in range(0,new_resolution):
-            for j in range(0,new_resolution):
-                x_coord = start + i*step
-                y_coord = start + (new_resolution - 1 - j)*step
-                pt = Point(x_coord, y_coord)
-                cell_id = new_mesh.bounding_box_tree().compute_first_entity_collision(pt)
-                #if mesh.bounding_box_tree().collides(pt):
-                if cell_id < new_mesh.num_cells():
-                    try:
-                        # Interior points can be evaluated directly
-                        vals[j,i] = new_f(pt)
-                    except:
-                        # Points near the boundary have issues due to rounding...
-                        cell = Cell(new_mesh, cell_id)
-                        coords = cell.get_vertex_coordinates()
-                        new_x_coord = coords[0]
-                        new_y_coord = coords[1]
-                        new_pt = Point(new_x_coord, new_y_coord)
-                        vals[j,i] = new_f(new_pt)
+            vals = np.zeros([new_resolution,new_resolution])
+            for i in range(0,new_resolution):
+                for j in range(0,new_resolution):
+                    x_coord = start + i*step
+                    y_coord = start + (new_resolution - 1 - j)*step
+                    pt = Point(x_coord, y_coord)
+                    cell_id = new_mesh.bounding_box_tree().compute_first_entity_collision(pt)
+                    #if mesh.bounding_box_tree().collides(pt):
+                    if cell_id < new_mesh.num_cells():
+                        try:
+                            # Interior points can be evaluated directly
+                            vals[j,i] = new_f(pt)
+                        except:
+                            # Points near the boundary have issues due to rounding...
+                            cell = Cell(new_mesh, cell_id)
+                            coords = cell.get_vertex_coordinates()
+                            new_x_coord = coords[0]
+                            new_y_coord = coords[1]
+                            new_pt = Point(new_x_coord, new_y_coord)
+                            vals[j,i] = new_f(new_pt)
 
-        hires_filename = './Data/hires_data_' + str(n) + '.npy'
-        np.save(hires_filename, vals)
-        """
-
+            hires_filename = './Data/hires_data_' + str(n) + '.npy'
+            np.save(hires_filename, vals)
 
 
-def fast_convert_samples(data_count, current_data, resolution=64, GEN_STIFFNESS=False):
+
+
+def fast_convert_samples(data_count, current_data, resolution=64, GEN_STIFFNESS=False, use_hires=False):
     #set_log_level(ERROR)
     set_log_level(40)
     #print("\n\nConverting samples...")
@@ -280,11 +280,18 @@ def fast_convert_samples(data_count, current_data, resolution=64, GEN_STIFFNESS=
             data_function_filename = './Data/data_' + str(n) + '.xml'
         File(data_function_filename) << f
 
-        """
-        ## Save hi-res data array
-        new_resolution = 2*resolution
-        data_array = np.reshape(data, [resolution, resolution])
-        resized_array = cv2.resize(data_array, (new_resolution, new_resolution), interpolation = cv2.INTER_CUBIC) 
-        hires_filename = './Data/hires_data_' + str(n) + '.npy'
-        np.save(hires_filename, resized_array)
-        """
+        if use_hires:
+            ## Save hi-res data array
+            new_resolution = 2*resolution
+            data_array = np.reshape(data, [resolution, resolution])
+            resized_array = cv2.resize(data_array, (new_resolution, new_resolution), interpolation = cv2.INTER_CUBIC) 
+            
+            if GEN_STIFFNESS:
+                hires_filename = './Data/hires_coeff_' + str(n) + '.npy'
+            else:
+                hires_filename = './Data/hires_data_' + str(n) + '.npy'
+
+            np.save(hires_filename, resized_array)
+
+
+

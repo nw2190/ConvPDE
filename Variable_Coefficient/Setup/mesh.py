@@ -11,7 +11,7 @@ from PIL import Image, ImageFilter
 
 # Generates mesh for a polygon with vertex count in specified interval,
 # saves mesh for solver, and saves image file of specified resolution.
-def gen_mesh(resolution, vertex_min, vertex_max, mesh_resolution, mesh_directory, ID):
+def gen_mesh(resolution, vertex_min, vertex_max, mesh_resolution, mesh_directory, ID, use_hires=False):
 
     # Define the Number of Vertices
     N = np.random.randint(vertex_min,vertex_max)
@@ -221,42 +221,42 @@ def gen_mesh(resolution, vertex_min, vertex_max, mesh_resolution, mesh_directory
         mesh_filename = mesh_directory + 'mesh_' + str(ID) + '.xml'
         File(mesh_filename) << mesh
 
-        """
-        # Convert Hi-Res Arrays to Image
-        new_img = Image.fromarray(new_mesh_array, mode='L')
-        new_mask = Image.fromarray(new_alpha_array, mode='L')
-        new_img.convert('LA')
-        new_img.putalpha(new_mask)
-        
-        # Save Mesh Image
-        #image_filename = mesh_directory + 'mesh_' + str(ID) + '.png'
-        #img.save(image_filename)
-        
-        # Save Mesh Array
-        vals, dom = new_img.split()
-        bdry_image = new_img.filter(ImageFilter.FIND_EDGES)
-        vals, bdry = bdry_image.split()        
-        
-        domain_array = np.array(dom, dtype='uint8')
-        boundary_array = np.array(bdry, dtype='uint8')
-        
-        domain_array = normalize_alpha(domain_array)
-        boundary_array = normalize_alpha(boundary_array)
-        domain_boundary = domain_array + boundary_array
+        if use_hires:
+            # Convert Hi-Res Arrays to Image
+            new_img = Image.fromarray(new_mesh_array, mode='L')
+            new_mask = Image.fromarray(new_alpha_array, mode='L')
+            new_img.convert('LA')
+            new_img.putalpha(new_mask)
 
-        mesh_array_file = mesh_directory + 'hires_mesh_' + str(ID) + '.npy'
-        np.save(mesh_array_file,domain_boundary)
-        """
+            # Save Mesh Image
+            #image_filename = mesh_directory + 'mesh_' + str(ID) + '.png'
+            #img.save(image_filename)
+
+            # Save Mesh Array
+            vals, dom = new_img.split()
+            bdry_image = new_img.filter(ImageFilter.FIND_EDGES)
+            vals, bdry = bdry_image.split()        
+
+            domain_array = np.array(dom, dtype='uint8')
+            boundary_array = np.array(bdry, dtype='uint8')
+
+            domain_array = normalize_alpha(domain_array)
+            boundary_array = normalize_alpha(boundary_array)
+            domain_boundary = domain_array + boundary_array
+
+            mesh_array_file = mesh_directory + 'hires_mesh_' + str(ID) + '.npy'
+            np.save(mesh_array_file,domain_boundary)
+
         
         # Save Mesh Data (same as lo-res)
         #mesh_filename = mesh_directory + 'hires_mesh_' + str(ID) + '.xml'
         #File(mesh_filename) << new_mesh
 
 
-def gen_mesh_batch(resolution, vertex_min, vertex_max, mesh_resolution, mesh_dir, data_count, current_data):
+def gen_mesh_batch(resolution, vertex_min, vertex_max, mesh_resolution, mesh_dir, data_count, current_data, use_hires=False):
 
     # Reset random seed from parent process
     np.random.seed(seed=current_data)
     
     for n in range(current_data,current_data + data_count):
-        gen_mesh(resolution, vertex_min, vertex_max, mesh_resolution, mesh_dir, n)
+        gen_mesh(resolution, vertex_min, vertex_max, mesh_resolution, mesh_dir, n, use_hires=use_hires)

@@ -17,7 +17,7 @@ if __name__ == '__main__':
     subdivision = 2
 
     def convert(d):
-        fast_convert_samples(int(FLAGS.data_count/subdivision), d, resolution=FLAGS.resolution, GEN_STIFFNESS=FLAGS.gen_stiffness)
+        fast_convert_samples(int(FLAGS.data_count/subdivision), d, resolution=FLAGS.resolution, GEN_STIFFNESS=FLAGS.gen_stiffness, use_hires=FLAGS.use_hires)
     
     # Create multiprocessing pool
     NumProcesses = 2*FLAGS.cpu_count
