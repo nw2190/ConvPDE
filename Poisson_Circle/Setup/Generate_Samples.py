@@ -27,7 +27,8 @@ if __name__ == '__main__':
         os.makedirs(FLAGS.soln_dir)
 
     # Create multiprocessing pool
-    NumProcesses = FLAGS.cpu_count 
+    #NumProcesses = FLAGS.cpu_count
+    NumProcesses = int(np.floor(FLAGS.cpu_count//2))
     pool = multiprocessing.Pool(processes=NumProcesses)
 
     start_indices = [n*FLAGS.data_count for n in range(0,FLAGS.cov_count)]

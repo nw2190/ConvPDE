@@ -18,7 +18,7 @@ if __name__ == '__main__':
     subdivision = 2
 
     def mesh_batch(d):
-        gen_mesh_batch(FLAGS.resolution, FLAGS.vertex_min, FLAGS.vertex_max + 1, FLAGS.mesh_resolution, FLAGS.mesh_dir, int(FLAGS.data_count/subdivision), d)
+        gen_mesh_batch(FLAGS.resolution, FLAGS.vertex_min, FLAGS.vertex_max + 1, FLAGS.mesh_resolution, FLAGS.mesh_dir, int(FLAGS.data_count/subdivision), d, use_hires=FLAGS.use_hires)
     
     # Create multiprocessing pool
     NumProcesses = 2*FLAGS.cpu_count
