@@ -42,12 +42,12 @@ def write_tfrecords(indices, start_file_count, file_count, data_dir="./", tfreco
 
         if use_hires:
             data = np.load(data_dir + "Data/hires_data_" + str(i) + ".npy").flatten().astype(np.float32)
-            coeff = np.load(data_dir + "Data/coeff_" + str(i) + ".npy").flatten().astype(np.float32)            
+            coeff = np.load(data_dir + "Data/hires_coeff_" + str(i) + ".npy").flatten().astype(np.float32) 
             mesh = np.load(data_dir + "Meshes/hires_mesh_" + str(i) + ".npy").astype(np.uint8)
             soln = np.load(data_dir + "Solutions/hires_solution_" + str(i) + ".npy").flatten().astype(np.float32)
         else:
             data = np.load(data_dir + "Data/data_" + str(i) + ".npy").flatten().astype(np.float32)
-            coeff = np.load(data_dir + "Data/hires_coeff_" + str(i) + ".npy").flatten().astype(np.float32)            
+            coeff = np.load(data_dir + "Data/coeff_" + str(i) + ".npy").flatten().astype(np.float32)
             mesh = np.load(data_dir + "Meshes/mesh_" + str(i) + ".npy").astype(np.uint8)
             soln = np.load(data_dir + "Solutions/solution_" + str(i) + ".npy").flatten().astype(np.float32)
 
