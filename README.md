@@ -58,11 +58,6 @@ $ python Compute_Cholesky_Factors.py
     
 $ ./CREATE_DATASET.sh
     
- [ Generating Covariances ]
-    
-  Progress:  100.0%
-
-    
  [ Sampling Functions ]
 
   Progress:  100.0%
