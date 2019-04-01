@@ -20,7 +20,7 @@ This code provides examples for training convolutional neural networks for appro
 
 ### Problem Setups    
 Five predefined problem setups are provided for training the convolutional network:
-* `Poisson_Varying_Domain/` - Poisson equation with the domain fixed as a unit circle
+* `Poisson_Circle/` - Poisson equation with the domain fixed as a unit circle
 * `Poisson_Varying_Domain/` - Poisson equation with both the domain and source term varying
 * `Nonlinear_Poisson/` - Nonlinear partial differential equation with varying domain and source term
 * `Variable_Coefficient/` - Variable coefficient elliptic differential operator with varying domain, source, and stiffness
