@@ -9,7 +9,7 @@ import multiprocessing
 from random import shuffle
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 # Creates byte feature for storing numpy integer arrays        
 def _bytes_feature(value):

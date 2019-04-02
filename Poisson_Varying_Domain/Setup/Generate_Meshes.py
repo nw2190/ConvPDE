@@ -5,7 +5,7 @@ import multiprocessing
 import sys
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 # Import mesh generation function
 from mesh import gen_mesh_batch

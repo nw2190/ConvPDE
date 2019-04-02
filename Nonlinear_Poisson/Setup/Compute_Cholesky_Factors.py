@@ -10,7 +10,7 @@ import multiprocessing
 #import ctypes
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 # Import function for generating covariance matrices
 from sample_gaussian import generate_covariance

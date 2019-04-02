@@ -2,7 +2,7 @@ import sys
 import os
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 
 if __name__ == '__main__':

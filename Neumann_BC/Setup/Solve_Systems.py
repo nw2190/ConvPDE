@@ -7,7 +7,7 @@ import sys
 import time
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 # Import solver function
 from solver import gen_soln

@@ -4,7 +4,7 @@ import numpy as np
 import multiprocessing
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 # Import sampling and conversion functions
 from sample_gaussian import fast_convert_samples, sample_gaussian

@@ -3,7 +3,7 @@ from mshr import *
 from dolfin import *
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 # Import mesh generation function
 from mesh import gen_mesh

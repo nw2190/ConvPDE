@@ -4,7 +4,7 @@ import numpy as np
 import multiprocessing
 
 # Import flags specifying dataset parameters
-from flags import getFlags
+from setup_flags import getFlags
 
 
 def preprocess_data(start_index, data_count, data_dir, mesh_dir, soln_dir, RESCALE=True, use_hires=False):
