@@ -10,9 +10,11 @@ if __name__ == '__main__':
 
     data_count = int(FLAGS.cov_count * FLAGS.data_count)
     data_prefix = "./Data/data_"
+    coeff_prefix = "./Data/coeff_"
     mesh_prefix = "./Meshes/mesh_"
 
     data_missed = 0
+    coeff_missed = 0
     mesh_missed = 0
     progress_step = 1000
     print('\n [ Cleaning XML Files ]\n')
@@ -22,14 +24,20 @@ if __name__ == '__main__':
         except:
             data_missed += 1
         try:
+            os.remove(coeff_prefix + str(n) + ".xml")
+        except:
+            coeff_missed += 1
+        try:
             os.remove(mesh_prefix + str(n) + ".xml")
         except:
             mesh_missed += 1
         if n % progress_step == 0:
             sys.stdout.write('\r  Progress:  {0:.1%}'.format((n+1)/data_count))
             sys.stdout.flush()
-
-    #print("\n Data / Mesh XML Files Missing:")
+    print('\n')
+    
+    #print("\n Data / Coefficient / Mesh XML Files Missing:")
     #print(data_missed)
+    #print(coeff_missed)
     #print(mesh_missed)
 

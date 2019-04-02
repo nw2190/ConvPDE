@@ -28,7 +28,8 @@ if __name__ == '__main__':
         if n % progress_step == 0:
             sys.stdout.write('\r  Progress:  {0:.1%}'.format((n+1)/data_count))
             sys.stdout.flush()
-
+    print('\n')
+    
     #print("\n Data / Mesh XML Files Missing:")
     #print(data_missed)
     #print(mesh_missed)
