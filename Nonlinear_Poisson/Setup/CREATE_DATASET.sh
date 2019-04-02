@@ -1,5 +1,15 @@
-failed=0
+#!/bin/bash
+
+# Specify whether a virtual environment should be
+# used for writing the dataset to TFRecords files 
+VENV=1
+venv_command="source /home/nick/Documents/virtual_envs/tf/bin/activate"
+
+# Specify whether the Cholesky factors must be recomputed
 newchol=0
+
+# Initialize failure state and begin data generation
+failed=0
 if [ $newchol -eq 1 ]; then
     if [ $failed -eq 0 ]; then
         python Compute_Cholesky_Factors.py
@@ -45,13 +55,23 @@ if [ $failed -eq 0 ]; then
     fi
 fi
 if [ $failed -eq 0 ]; then
-    # ENTER VIRTUAL ENV
-    source ~/Documents/tf_probability/tf/bin/activate
-    python Write_TFRecords.py
-    deactivate
+    if [ $VENV -eq 1 ]; then
+        ${venv_command}
+        python Write_TFRecords.py
+        deactivate
+    else
+        python Write_TFRecords.py
+    fi
     if [ $? -ne 0 ]; then
         failed=1
         fail_file="Write_TFRecords.py"
+    fi
+fi
+if [ $failed -eq 0 ]; then
+    python Clean_XML.py
+    if [ $? -ne 0 ]; then
+        failed=1
+        fail_file="Clean_XML.py"
     fi
 fi
 

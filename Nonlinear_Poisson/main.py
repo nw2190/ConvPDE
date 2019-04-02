@@ -10,7 +10,7 @@ import os
 from misc import _parse_data, EarlyStoppingHook, get_transformations
 
 # Import base model for training
-from Base_Model import Model
+from base_model import Model
 
 # Import Flags specifying model hyperparameters and training options
 from flags import getFlags

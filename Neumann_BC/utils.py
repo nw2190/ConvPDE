@@ -5,14 +5,81 @@ from scipy.interpolate import interp2d
 import tensorflow as tf
 import numpy as np
 import gzip
+import time
 import os
 import sys
 import tensorflow.contrib.slim as slim
 from random import shuffle
 from shutil import copyfile, copytree
 
+# Import base model for defining early stopping hook
+# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/training/session_run_hook.py
+from tensorflow.python.training import session_run_hook
+from tensorflow.python.training import training_util
+
 # Import plotting functions from 'reader.py'
-from reader import *
+#from reader import *
+
+
+# Define list of transformations for data augmentation
+def get_transformations(rotate=False, flip=False):
+    if rotate and flip:
+        #transformations = [[0,0], [0,1], [1,0], [1,1], [2,0], [2,1], [3,0], [3,1]]
+        transformations = [[0,0], [0,1], [2,0], [2,1]]
+    elif rotate:
+        #transformations = [[0,0], [1,0], [2,0], [3,0]]
+        transformations = [[0,0], [2,0]]
+        #transformations = [[0,0], [1,0]]
+    elif flip:
+        transformations = [[0,0], [0,1]]
+    else:
+        transformations = [[0,0]]
+    return transformations
+
+# Transforms 'example_proto' byte strings into decoded
+# onehot label and resized image array 
+def _parse_data(example_proto, res=64, transformation=None):
+    features = {"data": tf.FixedLenFeature([res,res,1], tf.float32),
+                #"mesh": tf.FixedLenFeature([res,res,1], tf.uint8),
+                "mesh": tf.FixedLenFeature((), tf.string, default_value=""),
+                "soln": tf.FixedLenFeature([res,res,1], tf.float32)}
+    parsed_features = tf.parse_single_example(example_proto, features)
+
+    # Scale solutions back to [-1,1] range (approximately)
+    #SOLN_SCALING = 100.0
+    SOLN_SCALING = 25.0
+
+    mesh = tf.decode_raw(parsed_features["mesh"], tf.uint8)
+    mesh = tf.cast(tf.reshape(mesh, [res, res, 1]), tf.float32)
+
+    data = parsed_features["data"]
+    soln = tf.multiply(parsed_features["soln"], SOLN_SCALING)
+
+    # Apply transformation for data augmentation
+    if transformation is not None:
+        [rotation, flip] = transformation
+        
+        # Stacked data
+        stacked = tf.stack([data, mesh, soln], 0)
+
+        # Rotate data
+        stacked = tf.image.rot90(stacked, k=rotation)
+
+        # Flip data
+        """
+        if flip == 1:
+            stacked = tf.image.flip_left_right(stacked)
+        """
+        true_fn = lambda: tf.image.flip_left_right(stacked)
+        false_fn = lambda: stacked
+        stacked = tf.cond(tf.math.equal(flip, 1), true_fn, false_fn)
+
+        # Unstack data
+        data, mesh, soln = tf.unstack(stacked)
+        
+    return data, mesh, soln
+
+
 
 # Show all variables in current model
 def show_variables():
@@ -39,7 +106,7 @@ def checkData(data_dir):
 # Copy model and flags files for logging
 def backup_configs(model_dir):
     checkFolders([model_dir])
-    for f in ["main.py", "Base_Model.py", "reader.py", "utils.py", "misc.py", "flags.py", "convolution_layers.py"]:
+    for f in ["main.py", "base_model.py", "utils.py", "flags.py", "convolution_layers.py"]:
         copyfile(f, os.path.join(model_dir, f))
     if not os.path.exists(os.path.join(model_dir,"Networks")):
         copytree("Networks", os.path.join(model_dir,"Networks"))
@@ -51,135 +118,66 @@ def add_suffix(name, suffix):
         return name + suffix
     else:
         return name
-        
-# Creates byte feature for storing numpy integer arrays        
-def _bytes_feature(value):
-    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
-# Creates byte feature for storing numpy float arrays
-def _floats_feature(value):
-    return tf.train.Feature(float_list=tf.train.FloatList(value=[float(x) for x in value]))
 
-# Define function for creating tfrecords file for dataset
-def write_tfrecords(data_dir="./", alt_data_dir="./", data_count=50000, hires=True, examples_per_file=5000):
 
-    # Check that folder contains all dataset files
-    checkData(data_dir)
 
-    # Shuffle data and create training and validation sets
-    indices = [n for n in range(0,data_count)]
-    shuffle(indices)
-    t_indices = indices[0 : int(np.floor(0.8 * data_count))]
-    v_indices = indices[int(np.floor(0.8 * data_count)) : ]
 
-    
-    # Save training dataset in .tfrecords file
-    file_count = 0
-    step = 0
-    print("\n [ Writing Training Dataset ]\n")
-    for i in t_indices:
-        if (step % examples_per_file == 0) and not (step == 0):
-            # Close .tfrecords writer
-            writer.close()
-            file_count += 1
-            train_filename = os.path.join(data_dir, 'hires_training-' + str(file_count) + '.tfrecords')
-            writer = tf.python_io.TFRecordWriter(train_filename)
-        elif step % examples_per_file == 0:
-            file_count += 1
-            train_filename = os.path.join(data_dir, 'hires_training-' + str(file_count) + '.tfrecords')
-            writer = tf.python_io.TFRecordWriter(train_filename)
+# Define early stopping hook
+class EarlyStoppingHook(session_run_hook.SessionRunHook):
+    def __init__(self, loss_name, feed_dict={}, tolerance=0.01, stopping_step=50, start_step=100):
+        self.loss_name = loss_name
+        self.feed_dict = feed_dict
+        self.tolerance = tolerance
+        self.stopping_step = stopping_step
+        self.start_step = start_step
+
+    # Initialize global and internal step counts
+    def begin(self):
+        self._global_step_tensor = training_util._get_or_create_global_step_read()
+        if self._global_step_tensor is None:
+            raise RuntimeError("Global step should be created to use EarlyStoppingHook.")
+        self._prev_step = -1
+        self._step = 0
+
+    # Evaluate early stopping loss every 1000 steps
+    # (avoiding repetition when multiple run calls are made each step)
+    def before_run(self, run_context):
+        if (self._step % self.stopping_step == 0) and \
+           (not self._step == self._prev_step) and (self._step > self.start_step):
+
+            print("\n[ Early Stopping Check ]")
             
-        data = np.load(alt_data_dir + "Data/hires_data_" + str(i) + ".npy").flatten().astype(np.float32)
-        soln = np.load(alt_data_dir + "Solutions/hires_solution_" + str(i) + ".npy").flatten().astype(np.float32)
+            # Get graph from run_context session
+            graph = run_context.session.graph
 
-        
-        # Create a feature
-        feature = {'data': _floats_feature(data.tolist()),
-                   'soln': _floats_feature(soln.tolist())}
+            # Retrieve loss tensor from graph
+            loss_tensor = graph.get_tensor_by_name(self.loss_name)
 
-        # Create an example protocol buffer
-        example = tf.train.Example(features=tf.train.Features(feature=feature))
+            # Populate feed dictionary with placeholders and values
+            fd = {}
+            for key, value in self.feed_dict.items():
+                placeholder = graph.get_tensor_by_name(key)
+                fd[placeholder] = value
 
-        # Serialize to string and write to file
-        writer.write(example.SerializeToString())
-
-        step += 1
-        
-        # Display progress
-        sys.stdout.write('   Batch {0} of {1}\r'.format(step,len(t_indices)))
-        sys.stdout.flush()
-
-    # Close .tfrecords writer
-    writer.close()
-
-    # Save validation dataset in .tfrecords file
-    val_filename = os.path.join(data_dir, 'hires_validation.tfrecords')
-    writer = tf.python_io.TFRecordWriter(val_filename)
-    file_count = 0
-    step = 0
-    print("\n\n [ Writing Validation Dataset ]\n")
-    for i in v_indices:
-        if (step % examples_per_file == 0) and not (step == 0):
-            # Close .tfrecords writer
-            writer.close()
-            file_count += 1
-            val_filename = os.path.join(data_dir, 'hires_validation-' + str(file_count) + '.tfrecords')
-            writer = tf.python_io.TFRecordWriter(val_filename)
-        elif step % examples_per_file == 0:
-            file_count += 1
-            val_filename = os.path.join(data_dir, 'hires_validation-' + str(file_count) + '.tfrecords')
-            writer = tf.python_io.TFRecordWriter(val_filename)
-
-        data = np.load(alt_data_dir + "Data/hires_data_" + str(i) + ".npy").flatten().astype(np.float32)
-        soln = np.load(alt_data_dir + "Solutions/hires_solution_" + str(i) + ".npy").flatten().astype(np.float32)
-        
-        # Create a feature
-        feature = {'data': _floats_feature(data.tolist()),
-                   'soln': _floats_feature(soln.tolist())}
-
-        # Create an example protocol buffer
-        example = tf.train.Example(features=tf.train.Features(feature=feature))
-
-        # Serialize to string and write to file
-        writer.write(example.SerializeToString())
-
-        step += 1
-        
-        # Display progress
-        sys.stdout.write('   Batch {0} of {1}\r'.format(step,len(v_indices)))
-        sys.stdout.flush()
-
-    print("\n\n")
-    
-    # Close .tfrecords writer            
-    writer.close()
-
-
-# Read one example from tfrecords file (used for debugging purposes)
-def read_tfrecords(plot_count=1, data_dir="./Setup/DATA/", res=128, hires=True):
-    reader = tf.TFRecordReader()
-    filenames = os.path.join(data_dir, "hires_training-0.tfrecords")
-    filename_queue = tf.train.string_input_producer([filenames])
-    _, serialized_example = reader.read(filename_queue)
-
-    feature_set = {'data': tf.FixedLenFeature([res,res,1], tf.float32),
-                   'soln': tf.FixedLenFeature([res,res,1], tf.float32)}
-        
-    features = tf.parse_single_example( serialized_example, features= feature_set )
-
-    data = features['data']
-    soln = features['soln']
-
-    with tf.Session() as sess:
-        sess.run([tf.global_variables_initializer(), tf.local_variables_initializer()])
-        coord = tf.train.Coordinator()
-        threads = tf.train.start_queue_runners(sess=sess, coord=coord)
-        for i in range(0,plot_count):
-            data_vals, soln_vals = sess.run([data, soln])
-            print(data_vals.shape)
-            print(soln_vals.shape)
-            #plot_data_vals(data_vals[:,:,0])
-            #plot_data_vals(soln_vals[:,:,0])
-            plt.show()
+            return session_run_hook.SessionRunArgs({'step': self._global_step_tensor,
+                                                    'loss': loss_tensor}, feed_dict=fd)
+        else:
+            return session_run_hook.SessionRunArgs({'step': self._global_step_tensor})
+                                                    
+    # Check if current loss is below tolerance for early stopping
+    def after_run(self, run_context, run_values):
+        if (self._step % self.stopping_step == 0) and \
+           (not self._step == self._prev_step) and (self._step > self.start_step):
+            global_step = run_values.results['step']
+            current_loss = run_values.results['loss']
+            print("Current stopping loss  =  %.10f\n" %(current_loss))
             
+            if current_loss < self.tolerance:
+                print("[ Early Stopping Criterion Satisfied ]\n")
+                run_context.request_stop()
+            self._prev_step = global_step            
+        else:
+            global_step = run_values.results['step']
+            self._step = global_step
 

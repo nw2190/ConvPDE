@@ -27,15 +27,11 @@ def getFlags():
 
     # Specify parameters for dataset creation
     parser.add_argument("--cov_count", default=20, type=int, help="Number of covariance matrices")
-    parser.add_argument("--data_count", default=2500, type=int, help="Number of data samples for each covariance matrix")
-    #parser.add_argument("--resolution", default=64, type=int, help="Resolution for data files")
-    #parser.add_argument("--resolution", default=100, type=int, help="Resolution for data files")
+    parser.add_argument("--data_count", default=200, type=int, help="Number of data samples for each covariance matrix")
     parser.add_argument("--resolution", default=128, type=int, help="Resolution for data files")
-    #parser.add_argument("--mesh_resolution", default=25, type=int, help="Resolution for FEniCS solver")
     parser.add_argument("--mesh_resolution", default=35, type=int, help="Resolution for FEniCS solver")
 
-    #parser.add_argument("--vertex_min", default=4, type=int, help="Minimum number of vertices for domain")
-    #parser.add_argument("--vertex_max", default=10, type=int, help="Maximum number of vertices for domain"
+    # Specify range for number of vertices in generated domains
     parser.add_argument("--vertex_min", default=4, type=int, help="Minimum number of vertices for domain")
     parser.add_argument("--vertex_max", default=16, type=int, help="Maximum number of vertices for domain")
 
