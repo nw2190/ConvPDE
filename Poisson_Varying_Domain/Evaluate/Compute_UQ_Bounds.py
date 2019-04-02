@@ -18,7 +18,6 @@ v_indices_file = "./Setup/DATA/v_indices_0.npy"
 
 # Load graph from frozen .pb file
 def load_graph(frozen_model_folder):
-    #frozen_graph_filename = frozen_model_folder + "frozen_model.pb"
     frozen_graph_filename = frozen_model_folder + "optimized_frozen_model.pb"
     
     with tf.gfile.GFile(frozen_graph_filename, "rb") as f:
@@ -46,6 +45,8 @@ if __name__ == '__main__':
     parser.add_argument("--slice_plot", default=False, action="store_true", help="Plot a slice of the prediction/solution")
     parser.add_argument("--show_error", default=False, action="store_true", help="Plot the error between the prediction and solution")
     parser.add_argument("--use_hires", default=False, action="store_true", help="Option to use high resolution data")
+    parser.add_argument("--laplace", default=False, action="store_true", help="Use Laplace distribution")
+    parser.add_argument("--cauchy", default=False, action="store_true", help="Use Cauchy distribution")
     args = parser.parse_args()
     default_res = args.default_res
     DATA_dir = args.DATA_dir
@@ -54,6 +55,8 @@ if __name__ == '__main__':
     graph = load_graph(args.model_dir)
     ID = args.ID
     USE_HIRES = args.use_hires
+    LAPLACE = args.laplace
+    CAUCHY = args.cauchy
     
     # Display operators defined in graph
     #for op in graph.get_operations():
@@ -147,6 +150,11 @@ if __name__ == '__main__':
         uq_levels = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
                               1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
                               2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0])
+
+        """
+        if LAPLACE or CAUCHY:
+            uq_levels = 2.0*uq_levels
+        """
 
         uq_train = np.zeros([uq_levels.size, TRAIN_BATCHES])
         
@@ -259,49 +267,21 @@ if __name__ == '__main__':
             v_stats[i,0] = np.mean(uq_test[i,:])
             v_stats[i,1] = np.std(uq_test[i,:])
         
-        """
-        t_uq_mean = np.mean(uq_train)
-        t_uq_std = np.std(uq_train)
-        t_uq2_mean = np.mean(uq2_train)
-        t_uq3_mean = np.mean(uq3_train)
-        t_uq2_std = np.std(uq2_train)
-        t_uq3_std = np.std(uq3_train)
-
-        v_uq_mean = np.mean(uq_test)
-        v_uq_std = np.std(uq_test)
-        v_uq2_mean = np.mean(uq2_test)
-        v_uq2_std = np.std(uq2_test)
-        v_uq3_mean = np.mean(uq3_test)
-        v_uq3_std = np.std(uq3_test)
-        """
         
-        with open('UQ_Bounds_NEW.csv', 'w') as csvfile:
+        if LAPLACE:
+            output_file = "Laplace_UQ_Bounds.csv"
+        elif CAUCHY:
+            output_file = "Cauchy_UQ_Bounds.csv"
+        else:
+            output_file = "Normal_UQ_Bounds.csv"
+            
+        with open(output_file, 'w') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
-            """
-            rows = ["Uncertainty Quantification (Train):",
-                    "  UQ mean  =  %.8f" %(t_uq_mean),
-                    "  UQ std   =  %.8f" %(t_uq_std),
-                    "  UQ2 mean  =  %.8f" %(t_uq2_mean),
-                    "  UQ2 std   =  %.8f" %(t_uq2_std),
-                    "  UQ3 mean  =  %.8f" %(t_uq3_mean),
-                    "  UQ3 std   =  %.8f" %(t_uq3_std),
-                    " ",
-                    "Uncertainty Quantification (Validation):",
-                    "  UQ mean  =  %.8f" %(v_uq_mean),
-                    "  UQ std   =  %.8f" %(v_uq_std),
-                    "  UQ2 mean  =  %.8f" %(v_uq2_mean),
-                    "  UQ2 std   =  %.8f" %(v_uq2_std),
-                    "  UQ3 mean  =  %.8f" %(v_uq3_mean),
-                    "  UQ3 std   =  %.8f" %(v_uq3_std)]
-
-            """
 
             rows = ["%.3f %.8f %.8f %.8f %.8f" %(uq_levels[i], t_stats[i,0], t_stats[i,1], v_stats[i,0], v_stats[i,1]) for i in range(0,uq_levels.size)]
             
             for row in rows:
                 csvfile.write(row + "\n")
-                #csvwriter.writerow(row)
 
 
 

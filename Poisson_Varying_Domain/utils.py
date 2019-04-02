@@ -105,7 +105,7 @@ def checkData(data_dir):
 # Copy model and flags files for logging
 def backup_configs(model_dir):
     checkFolders([model_dir])
-    for f in ["main.py", "Base_Model.py", "reader.py", "utils.py", "misc.py", "flags.py", "convolution_layers.py"]:
+    for f in ["main.py", "base_model.py", "utils.py", "flags.py", "convolution_layers.py"]:
         copyfile(f, os.path.join(model_dir, f))
     if not os.path.exists(os.path.join(model_dir,"Networks")):
         copytree("Networks", os.path.join(model_dir,"Networks"))

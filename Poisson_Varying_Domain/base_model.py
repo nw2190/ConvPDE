@@ -6,17 +6,13 @@ import csv
 import sys
 import os
 import importlib
-
 import cv2
 
 # Import MNIST loader and utility functions from 'utils.py' file
-from utils import write_tfrecords, checkFolders, show_variables, add_suffix, backup_configs, _parse_data, EarlyStoppingHook, get_transformations
+from utils import checkFolders, show_variables, add_suffix, backup_configs, _parse_data, EarlyStoppingHook, get_transformations
 
 # Import convolution layer definitions from 'convolution layers.py' file
 from convolution_layers import conv2d_layer, inception_v3, transpose_conv2d_layer, transpose_inception_v3, dense_layer, factored_conv2d, upsample
-
-# Import parse function for tfrecords features  and EarlyStoppingHook from 'misc.py' file
-#from misc import _parse_data, EarlyStoppingHook, get_transformations
 
 # Import AMSGrad optimizer
 from AMSGrad import Optimizers.AMSGrad
@@ -43,11 +39,6 @@ class Model(object):
         self.log_dir = os.path.join(self.model_dir, self.log_dir)
         self.plot_dir = os.path.join(self.model_dir, self.plot_dir)
 
-
-        # Create tfrecords if file does not exist
-        #if not os.path.exists(os.path.join(self.data_dir,'training.tfrecords')):
-        #    print("\n [ Creating tfrecords files ]\n")
-        #    write_tfrecords(self.data_dir)
 
         # Initialize datasets for training, validation, and early stopping checks
         self.initialize_datasets()

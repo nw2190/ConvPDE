@@ -9,7 +9,7 @@ import os
 import cv2
 
 # Import MNIST loader and utility functions from 'utils.py' file
-from utils import write_tfrecords, checkFolders, show_variables, add_suffix, backup_configs
+from utils import checkFolders, show_variables, add_suffix, backup_configs
 
 # Import convolution layer definitions from 'convolution layers.py' file
 from convolution_layers import conv2d_layer, inception_v3, transpose_conv2d_layer, transpose_inception_v3, dense_layer, factored_conv2d, upsample
