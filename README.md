@@ -97,7 +97,6 @@ along with the preprocessed dataset example written to TFRecords files in the `.
 
 
 ## Training Models
-
 Once the datasets have been created, models can be trained via:
 
 
@@ -110,12 +109,20 @@ $ python main.py
 Additional training flags can be passed as prescribed in the `flags.py` files in each problem subdirectory; default values for various training modes are provided in the `Train_Example.sh` shell file.
 
 
-
 The training progress can be monitored using TensorBoard:
 
 ```console
 $ tensorboard --logdir Model/logs/
 ```
+
+### Network Architecture
+The default convolutional network architectures are defined in the `Networks/network_1.py` files in each problem directory.  The default architecture corresponds to an encoder-decoder network as illustrated below:
+
+<p align="center">
+  <img width="700" src="figures/Architecture.png" style="margin: auto;">
+</p>
+
+Alternative network architectures can be defined in `Network/network_*.py` files and used during training by passing the `--network *` flag (where `*` denotes an integer value used to label the network architecture).
 
     
 ## Model Predictions
