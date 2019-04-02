@@ -82,6 +82,12 @@ $ ./CREATE_DATASET.sh
  [ Writing TFRecords ]
 
   Progress:  100.0%
+
+
+ [ Cleaning XML Files ]
+
+  Progress:  100.0%
+  
 ```
 
 
@@ -116,13 +122,20 @@ $ tensorboard --logdir Model/logs/
 ```
 
 ### Network Architecture
-The default convolutional network architectures are defined in the `Networks/network_1.py` files in each problem directory.  The default architecture corresponds to an encoder-decoder network as illustrated below:
+The convolutional network architectures are defined in the `Networks/network_*.py` files in each problem directory.  The default `Networks/network_1.py` architecture corresponds to an encoder-decoder network as illustrated below:
 
 <p align="center">
-  <img width="700" src="figures/Architecture.png" style="margin: auto;">
+  <img width="750" src="figures/Architecture.png" style="margin: auto;">
 </p>
 
 Alternative network architectures can be defined in `Network/network_*.py` files and used during training by passing the `--network *` flag (where `*` denotes an integer value used to label the network architecture).
+
+
+### Loss Functions
+The conventional mean squared error (MSE) loss function is used by default.  The loss weight for the boundary term can be modified using the `--bdry_weight` flag (e.g. `--bdry_weight 0.0` omits the boundary in the loss calculation).
+
+A probabilistic training procedure can be employed by using the `--use_prob_loss` flag.  This instructs the network to make both mean and standard deviation predictions and defines the loss function to be the negative log marginal likelihood (NLML) of the true solution values with respect the predicted statistics.
+
 
     
 ## Model Predictions
