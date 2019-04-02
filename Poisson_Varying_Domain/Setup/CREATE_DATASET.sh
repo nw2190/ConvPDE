@@ -45,7 +45,9 @@ if [ $failed -eq 0 ]; then
     fi
 fi
 if [ $failed -eq 0 ]; then
+    source ~/Documents/virtual_envs/tf/bin/activate
     python Write_TFRecords.py
+    deactivate
     if [ $? -ne 0 ]; then
         failed=1
         fail_file="Write_TFRecords.py"
