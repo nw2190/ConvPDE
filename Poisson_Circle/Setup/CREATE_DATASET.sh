@@ -75,6 +75,8 @@ if [ $failed -eq 0 ]; then
     fi
 fi
 
+# Move mesh templates into 'DATA/' directory
+mv Meshes DATA/
 
 if [ $failed -ne 0 ]; then
     echo " "
