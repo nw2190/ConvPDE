@@ -51,13 +51,6 @@ if [ $failed -eq 0 ]; then
         fail_file="Write_TFRecords.py"
     fi
 fi
-if [ $failed -eq 0 ]; then
-    python Clean_XML.py
-    if [ $? -ne 0 ]; then
-        failed=1
-        fail_file="Clean_XML.py"
-    fi
-fi
 
 
 if [ $failed -ne 0 ]; then
