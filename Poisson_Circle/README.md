@@ -11,7 +11,7 @@ In particular, the domain `\Omega` is taken to be a fixed unit circle while the 
 The mesh file for the unit circle is encoded as an integer-valued array with values of zero outside of the domain, values of one throughout the interior of the domain, and values of two along the boundary:
 
 <p align="center">
-  <img width="250" src="figures/domain.png" style="margin: auto;">
+  <img width="300" src="../figures/domain.png" style="margin: auto;">
 </p>
 
 This file is used to adapt the network's loss function to the domain in consideration; in particular, the loss is instructed to ignore the values of predictions outside of the domain and is capable of handling boundary and interior predictions separately.
