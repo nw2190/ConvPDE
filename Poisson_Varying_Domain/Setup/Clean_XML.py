@@ -25,7 +25,7 @@ if __name__ == '__main__':
             os.remove(mesh_prefix + str(n) + ".xml")
         except:
             mesh_missed += 1
-        if n % progress_step == 0:
+        if (n % progress_step == 0) or (n == data_count - 1):
             sys.stdout.write('\r  Progress:  {0:.1%}'.format((n+1)/data_count))
             sys.stdout.flush()
     print('\n')

@@ -8,7 +8,7 @@ import os
 
 import cv2
 
-# Import MNIST loader and utility functions from 'utils.py' file
+# Import utility functions from 'utils.py' file
 from utils import checkFolders, show_variables, add_suffix, backup_configs
 
 # Import convolution layer definitions from 'convolution layers.py' file
@@ -25,8 +25,10 @@ and probabilistic loss according to MVN prediction.
 def encoder(self, x, training=True, reuse=None, name=None):
 
     # Unpack data
-    data, mesh, __ = x
+    data, coeff, mesh, __ = x
 
+    data = tf.concat([data, coeff], axis=3)
+    
     if self.use_noise_injection:
         interior_indices = tf.greater(mesh, 0)
         zero_tensor = tf.zeros_like(data)
@@ -160,12 +162,13 @@ def evaluate_model(self, data, reuse=None, training=True, suffix=None):
         h6 = self.sampleGaussian(m, log_s, name='latent_sample')
         h6 = tf.layers.dropout(h6, rate=self.dropout_rate, training=training)
         z = [h1, h2, h3, h4, h5, h6]
-        if self.reduce_noise:
-            # Use KL divergence w.r.t. N(0, 0.1*I)
-            # by comparing with 10*sigma ~ log(10*sigma) ~ log(10) + log(sigma)
-            kl_loss = self.kl_wt*tf.reduce_sum([self.compute_kl_loss(m,tf.add(10.0*tf.ones_like(log_s),log_s))])
-        else:
-            kl_loss = self.kl_wt*tf.reduce_sum([self.compute_kl_loss(m,log_s)])
+        #if self.reduce_noise:
+        #    # Use KL divergence w.r.t. N(0, 0.1*I)
+        #    # by comparing with 10*sigma ~ log(10*sigma) ~ log(10) + log(sigma)
+        #    kl_loss = self.kl_wt*tf.reduce_sum([self.compute_kl_loss(m,tf.add(10.0*tf.ones_like(log_s),log_s))])
+        #else:
+        #    kl_loss = self.kl_wt*tf.reduce_sum([self.compute_kl_loss(m,log_s)])
+        kl_loss = self.kl_wt*tf.reduce_sum([self.compute_kl_loss(m,log_s)])
     else:
         h1, h2, h3, h4, h5, h6 = z
         h6 = tf.nn.leaky_relu(h6)
