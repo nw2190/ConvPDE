@@ -10,19 +10,19 @@ import importlib
 import cv2
 
 # Import MNIST loader and utility functions from 'utils.py' file
-from utils import write_tfrecords, checkFolders, show_variables, add_suffix, backup_configs
+from utils import write_tfrecords, checkFolders, show_variables, add_suffix, backup_configs, _parse_data, EarlyStoppingHook, get_transformations
 
 # Import convolution layer definitions from 'convolution layers.py' file
 from convolution_layers import conv2d_layer, inception_v3, transpose_conv2d_layer, transpose_inception_v3, dense_layer, factored_conv2d, upsample
 
 # Import parse function for tfrecords features  and EarlyStoppingHook from 'misc.py' file
-from misc import _parse_data, EarlyStoppingHook, get_transformations
+#from misc import _parse_data, EarlyStoppingHook, get_transformations
 
 # Import AMSGrad optimizer
-from AMSGrad import AMSGrad
+from AMSGrad import Optimizers.AMSGrad
 
 # Import SGLD optimizer
-from SGLD import SGLD
+from SGLD import Optimizers.SGLD
 
 # Import TF Probability for SGLD optimizer
 #import tensorflow_probability as tfp
