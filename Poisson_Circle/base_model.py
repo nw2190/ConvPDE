@@ -6,23 +6,19 @@ import csv
 import sys
 import os
 import importlib
-
 import cv2
 
-# Import MNIST loader and utility functions from 'utils.py' file
-from utils import write_tfrecords, checkFolders, show_variables, add_suffix, backup_configs
+# Import utility functions from 'utils.py' file
+from utils import checkFolders, show_variables, add_suffix, backup_configs, _parse_data, EarlyStoppingHook, get_transformations
 
 # Import convolution layer definitions from 'convolution layers.py' file
 from convolution_layers import conv2d_layer, inception_v3, transpose_conv2d_layer, transpose_inception_v3, dense_layer, factored_conv2d, upsample
 
-# Import parse function for tfrecords features  and EarlyStoppingHook from 'misc.py' file
-from misc import _parse_data, EarlyStoppingHook, get_transformations
-
 # Import AMSGrad optimizer
-from AMSGrad import AMSGrad
+from Optimizers.AMSGrad import AMSGrad
 
 # Import SGLD optimizer
-from SGLD import SGLD
+from Optimizers.SGLD import SGLD
 
 # Import TF Probability for SGLD optimizer
 #import tensorflow_probability as tfp
@@ -49,6 +45,9 @@ class Model(object):
         #    print("\n [ Creating tfrecords files ]\n")
         #    write_tfrecords(self.data_dir)
 
+        # Define mesh template for loss function
+        self.set_mesh()
+        
         # Initialize datasets for training, validation, and early stopping checks
         self.initialize_datasets()
         
@@ -75,6 +74,18 @@ class Model(object):
             for key, val in flags.__dict__.items():
                 csvwriter.writerow([key, val])
 
+    # Specify mesh for loss function
+    def set_mesh(self):
+        if self.use_hires:
+            mesh = np.load(os.path.join(self.data_dir,"Meshes/hires_mesh_0.npy"))
+        else:
+            mesh = np.load(os.path.join(self.data_dir,"Meshes/mesh_0.npy"))
+        #if not (self.alt_res == 128):
+        #    mesh = cv2.resize(mesh, dsize=(self.alt_res, self.alt_res), interpolation=cv2.INTER_NEAREST)
+        #mesh = np.expand_dims(mesh, 0)
+        #mesh = np.expand_dims(mesh, 3)
+        mesh = np.expand_dims(mesh, 2)
+        self.mesh = tf.constant(mesh, dtype=tf.float32, name="mesh")
 
     # Create rotated dataset
     def make_dataset(self, training=True, transformation=None):
@@ -110,7 +121,7 @@ class Model(object):
         dataset = dataset.apply(tf.contrib.data.shuffle_and_repeat(10000)) # buffer_size here is just for 'randomness' of shuffling
         #dataset = dataset.apply(tf.contrib.data.shuffle_and_repeat(15000)) # buffer_size here is just for 'randomness' of shuffling
         dataset = dataset.apply(
-            tf.contrib.data.map_and_batch(lambda x: _parse_data(x,res=self.default_res,transformation=transformation),
+            tf.contrib.data.map_and_batch(lambda x: _parse_data(x,self.mesh,res=self.default_res,transformation=transformation),
                                           self.batch_size, num_parallel_batches=self.prefetch_count))
         #if self.use_gpu:
         #    dataset = dataset.apply(tf.contrib.data.prefetch_to_device("/gpu:0", buffer_size=self.prefetch_count))
@@ -124,12 +135,9 @@ class Model(object):
     def initialize_datasets(self):
 
         # Define prefetch count
-        #self.prefetch_count = 2
-        #self.prefetch_count = 4
-        #self.prefetch_count = 8
-        self.prefetch_count = 50
-        #self.prefetch_count = 100
-        
+        self.prefetch_count = 4
+        #self.prefetch_count = 10
+
         # Specify which transformations to use for data augmentation
         self.transformations = get_transformations(self.rotate, self.flip)
 
@@ -146,7 +154,7 @@ class Model(object):
             filenames = 'validation-*.tfrecords'
         efiles = tf.data.Dataset.list_files(os.path.join(self.data_dir, filenames))
         self.edataset = tf.data.TFRecordDataset(efiles)
-        self.edataset = self.edataset.map(lambda x: _parse_data(x,res=self.default_res))
+        self.edataset = self.edataset.map(lambda x: _parse_data(x,self.mesh,res=self.default_res))
         self.edataset = self.edataset.apply(tf.contrib.data.shuffle_and_repeat(self.stopping_size))
         self.edataset = self.edataset.batch(self.stopping_size)
         self.edataset = self.edataset.make_one_shot_iterator()
@@ -173,7 +181,7 @@ class Model(object):
     def compute_ms_loss(self, data, pred, name=None):
 
         # Unpack solution
-        _, __, mesh, soln  = data
+        _, mesh, soln  = data
 
         pred, scale = pred
 
@@ -220,12 +228,8 @@ class Model(object):
             boundary_loss = tf.reduce_mean(tf.reduce_sum(tf.pow(boundary_pred-boundary_soln, 2), axis=[1,2])/boundary_count)
         else:
             # Compute interior/boundary losses
-            #if self.use_int_count:
             interior_loss = tf.reduce_mean(tf.reduce_sum(tf.pow(masked_pred-masked_soln, 2), axis=[1,2])/interior_count)
             boundary_loss = tf.reduce_mean(tf.reduce_sum(tf.pow(boundary_pred-boundary_soln, 2), axis=[1,2])/boundary_count)
-            #else:
-            #interior_loss = tf.reduce_mean(tf.reduce_mean(tf.pow(masked_pred-masked_soln, 2), axis=[1,2]))
-            #boundary_loss = tf.reduce_mean(tf.reduce_mean(tf.pow(boundary_pred-boundary_soln, 2), axis=[1,2]))
 
 
         # Compute negative log probability
@@ -234,68 +238,13 @@ class Model(object):
         #prob_loss = -tf.reduce_mean(mvn.log_prob(tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])))
 
         # Compute negative log probability [manually]
-        if self.use_prob_loss:
-            soln_vals = tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])
-            means = tf.reshape(masked_pred, [-1, self.alt_res*self.alt_res])        
+        soln_vals = tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])
+        means = tf.reshape(masked_pred, [-1, self.alt_res*self.alt_res])        
+        stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
+        prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1))
 
-            if self.use_log_implementation:
-
-                if self.use_laplace:
-                    # LAPLACE LOSS
-                    b = tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
-                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.abs(soln_vals-means), b) - tf.log(2*b), axis=1))
-
-                elif self.use_cauchy:
-                    # CAUCHY LOSS
-                    gamma = tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
-                    #prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * tf.multiply(gamma, 1.0 + tf.divide(tf.pow(soln_vals-means,2), tf.pow(gamma,2)))), axis=1))
-                    # ALTERNATE IMPLEMENTATION
-                    prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * (gamma + tf.divide(tf.pow(soln_vals-means,2), gamma)))), axis=1)
-                else:
-                    # NORMAL LOSS
-                    stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
-                    if self.use_int_count:
-                        prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1)/interior_count)
-                    else:
-                        prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1))
-
-
-                masked_scale = tf.nn.softplus(masked_scale)
-
-            else:
-
-                ###
-                ###   LOG SCALE IMPLEMENTATION
-                ###
-
-                if self.use_laplace:
-                    # LAPLACE LOSS
-                    log_b = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
-                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.abs(soln_vals-means), tf.exp(log_b)) - tf.log(2) - log_b, axis=1))
-
-                elif self.use_cauchy:
-                    # CAUCHY LOSS
-                    #log_gamma = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
-                    gamma = tf.exp(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
-                    #prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * tf.multiply(gamma, 1.0 + tf.divide(tf.pow(soln_vals-means,2), tf.pow(gamma,2)))), axis=1))
-                    # ALTERNATE IMPLEMENTATION
-                    prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * (gamma + tf.divide(tf.pow(soln_vals-means,2), gamma)))), axis=1)
-                else:
-                    # NORMAL LOSS
-                    #stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
-                    log_stds = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
-                    #stds_2 = tf.pow(tf.exp(log_stds), 2)
-                    if self.use_int_count:
-                        prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds, axis=1)/interior_count)
-                    else:
-                        prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds), axis=1)
-
-
-                masked_scale = tf.exp(masked_scale)
-        else:
-            masked_scale = masked_soln
-            prob_loss = interior_loss
-            
+        masked_scale = tf.nn.softplus(masked_scale)
+        
         return masked_soln, masked_pred, masked_scale, interior_loss, boundary_loss, prob_loss
 
     # Compute relative losses
@@ -314,8 +263,7 @@ class Model(object):
     
     # Compute average uncertainty in predictions
     def compute_uncertainty(self, data, scale):
-        #_, mesh, __ = data
-        _, __, mesh, ___ = data
+        _, mesh, __ = data
         interior_indices = tf.greater(mesh, 0)
         interior_count = tf.reduce_sum(tf.cast(interior_indices, np.float32), axis=[1,2])
         uq = tf.reduce_mean(tf.reduce_sum(scale, axis=[1,2])/interior_count)
@@ -362,7 +310,7 @@ class Model(object):
 
         # Compute relative losses
         self.rel_l1, self.rel_l2 = self.compute_relative_loss(self.masked_soln, self.masked_pred, name="relative_loss")
-        
+
         # Define l2 loss as weighted sum of interior and boundary loss
         self.l2_loss = tf.add(self.int_weight*self.interior_loss, self.bdry_weight*self.boundary_loss, name='l2_loss')
 
@@ -449,10 +397,9 @@ class Model(object):
 
         # Define placeholders for directly feeding data for manual testing
         tdata = tf.placeholder(tf.float32, [None, None, None, 1], name='data_test')
-        tcoeff = tf.placeholder(tf.float32, [None, None, None, 1], name='coeff_test')
         tmesh = tf.placeholder(tf.float32, [None, None, None, 1], name='mesh_test')
         tsoln = tf.placeholder(tf.float32, [None, None, None, 1], name='soln_test')
-        test_soln, test_pred, test_scale, _, __, ____, _____ = self.evaluate_model(self, [tdata, tcoeff, tmesh, tsoln], reuse=True, training=tf_false, suffix="_test")
+        test_soln, test_pred, test_scale, _, __, ____, _____ = self.evaluate_model(self, [tdata, tmesh, tsoln], reuse=True, training=tf_false, suffix="_test")
 
         
     # Train model
@@ -537,9 +484,9 @@ class Model(object):
                 break
 
             # Plot predictions
-            #if step % self.plot_step == 0:
-            #    #self.plot_comparisons(step)
-            #    self.plot_data(step, handle=self.training_handle)
+            if step % self.plot_step == 0:
+                #self.plot_comparisons(step)
+                self.plot_data(step, handle=self.training_handle)
 
             # Break if early stopping hook requests stop after sess.run()
             if self.sess.should_stop():
@@ -562,9 +509,8 @@ class Model(object):
                     vsummary  = self.sess.run(self.merged_summaries, feed_dict=fd)
                     self.vwriter.add_summary(vsummary, step); self.vwriter.flush()
 
-            if not self.no_validation_checks:
-                if step % self.evaluation_step == 0:
-                    self.evaluate_validation(step)
+            if step % self.evaluation_step == 0:
+                self.evaluate_validation(step)
 
                 
     # Define method for computing model predictions
@@ -594,14 +540,12 @@ class Model(object):
         fd = {self.dataset_handle: handle, self.z: np.zeros([self.batch_size, self.z_dim]),
               self.training: False, self.kl_wt: self.kl_weight}
         in_data, msoln, pred =  self.sess.run([self.data, self.masked_soln, self.masked_pred], feed_dict=fd)
-        data, coeff, mesh, soln = in_data
+        data, mesh, soln = in_data
         for n in range(0, self.batch_size):
             soln_name = 'soln_' + str(n) + '.npy'; data_name = 'data_' + str(n) + '.npy'; mesh_name = 'mesh_' + str(n) + '.npy'
             msoln_name = 'msoln_' + str(n) + '.npy'; pred_name = 'pred_' + str(n) + '.npy'
-            coeff_name = 'coeff_' + str(n) + '.npy'
             np.save(os.path.join(plot_subdir, soln_name), soln[n,:,:,0])
             np.save(os.path.join(plot_subdir, data_name), data[n,:,:,0])
-            np.save(os.path.join(plot_subdir, coeff_name), coeff[n,:,:,0])
             np.save(os.path.join(plot_subdir, mesh_name), mesh[n,:,:,0])
             np.save(os.path.join(plot_subdir, msoln_name), msoln[n,:,:,0])
             np.save(os.path.join(plot_subdir, pred_name), pred[n,:,:,0])
@@ -619,32 +563,12 @@ class Model(object):
     # Evaluate model
     def evaluate_validation(self, step):
         v_batches = int(np.floor(0.2 * self.data_count/self.batch_size))
-        validation_loss, validation_uq = self.compute_cumulative_loss([0.,0.],
-                                                                      [self.l2_loss, self.uncertainty],
-                                                                      self.validation_handles[0], v_batches)
-        validation_loss = validation_loss/v_batches
-        validation_uq = validation_uq/v_batches
-
-        #print(validation_loss.shape)
-        #print(validation_uq.shape)
-        
-        with open(os.path.join(self.model_dir, "evaluation_losses.csv"), "a") as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow([step, validation_loss])
-
-        with open(os.path.join(self.model_dir, "evaluation_uncertainties.csv"), "a") as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvwriter.writerow([step, validation_uq])
-
-        """
-        v_batches = int(np.floor(0.2 * self.data_count/self.batch_size))
         validation_loss = self.compute_cumulative_loss([0.], [self.l2_loss], self.validation_handles[0], v_batches)
         validation_loss = validation_loss/v_batches
         with open(os.path.join(self.model_dir, "evaluation_losses.csv"), "a") as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvwriter.writerow([step, validation_loss[0]])
-        """
-        
+
     # Evaluate model
     def evaluate(self):
         t_batches = int(np.floor(0.8 * self.data_count/self.batch_size))
@@ -670,3 +594,5 @@ class Model(object):
         training_l2 = t_l2/t_batches
         validation_l2 = v_l2/v_batches
         return training_loss, validation_loss, training_uq, validation_uq, training_l1, validation_l1, training_l2, validation_l2
+        
+                    

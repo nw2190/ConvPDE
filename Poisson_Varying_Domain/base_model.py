@@ -8,7 +8,7 @@ import os
 import importlib
 import cv2
 
-# Import MNIST loader and utility functions from 'utils.py' file
+# Import utility functions from 'utils.py' file
 from utils import checkFolders, show_variables, add_suffix, backup_configs, _parse_data, EarlyStoppingHook, get_transformations
 
 # Import convolution layer definitions from 'convolution layers.py' file

@@ -6,8 +6,8 @@ import csv
 import sys
 import os
 
-# Import parse function for tfrecords features  and EarlyStoppingHook from 'misc.py' file
-from misc import _parse_data, EarlyStoppingHook, get_transformations
+# Import parse function for tfrecords features and EarlyStoppingHook from 'utils.py' file
+from utils import _parse_data, EarlyStoppingHook, get_transformations
 
 # Import base model for training
 from Base_Model import Model
