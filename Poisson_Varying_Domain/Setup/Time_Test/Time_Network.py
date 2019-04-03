@@ -254,7 +254,7 @@ def network_times():
             #print(" SOLVE TIMES:\n")
             #print("\n - Total Time: %.5f seconds" %(ltotal_time))
             #print(" - Batch Time: %.5f seconds" %(lbatch_time))
-            print("\n - Average Time: %.5f seconds\n" %(laverage_time))
+            print(" - Average Time: %.5f seconds\n" %(laverage_time))
 
 
             if NO_GPU:

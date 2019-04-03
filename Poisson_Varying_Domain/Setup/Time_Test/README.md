@@ -27,7 +27,11 @@ $ ./GENERATE_DATA.sh
 
 $ ./RUN_TIME_TESTS.sh
 
-...
+
+ .
+ .
+ .
+ 
 
  [ AVERAGE TIME RESULTS ]
 
