@@ -18,7 +18,13 @@ Provides training options and specifies hyperparameter values for the model.  Ke
 * `--use_prob_loss` - use the probabilistic loss function for training
 
 #### `Train_Model.sh`
-Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations using (1) probabilistic loss, (2) MSE loss, (3) MSE loss without boundary term, (4) probabilistic loss using Laplace distributions, and (5) probabilistic loss using Cauchy distributions.
+Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations for the following:
+* `1` - Probabilistic loss
+* `2` - MSE loss
+* `3` - MSE loss without boundary term
+* `4` - Probabilistic loss using Laplace distributions
+* `5` - Probabilistic loss using Cauchy distributions
+
 
 #### `main.py`
 Specifies the workflow for training the neural network models and saves final evaluation scores to `Model_1/final_losses.csv`.
