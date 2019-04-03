@@ -13,7 +13,7 @@ This code provides examples for training convolutional neural networks for appro
 
 ### Hardware Requirements
 * 16 GB of random access memory (RAM)
-* 250 GB of available hard drive space for storing training data
+* 100 GB of available hard drive space for storing training data
 * GPU accelerator for reasonable training times
 
 ## Dataset Creation
