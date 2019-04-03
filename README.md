@@ -120,7 +120,7 @@ $ python Freeze.py --model_dir ../Model/
 
 ### Plotting Predictions
 
-Once a trained model has been frozen to a protocol buffer file, the network predictions can be compared with true solutions using the `Plot_Predictions.py` file:
+Once a trained model has been frozen to a protocol buffer file, the network predictions can be compared with true solutions using the `Plot_Prediction.py` file:
 
 ```console
 $ cd Poisson_Varying_Domain/Evaluate/
@@ -161,10 +161,10 @@ $ python Freeze.py --model_dir ../Model/
 $ python Compute_UQ_Bounds.py --model_dir ../Model/
 ```
 
-The computed uncertainty results are stored in the `UQ_Bounds.csv` file and can be visualized with `plot_uq.py`:
+The computed uncertainty results are stored in the `UQ_Bounds.csv` file and can be visualized with `Plot_UQ.py`:
 
 ```console
-$ python plot_uq.py 
+$ python Plot_UQ.py 
 ```
 
 <p align="center">
