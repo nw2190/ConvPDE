@@ -17,10 +17,7 @@ if __name__ == '__main__':
     FLAGS = getFlags()
 
     # Divide tasks into smaller pieces
-    #subdivision = 10
     subdivision = 20
-    #subdivision = 5
-    #subdivision = 1
     
     def sample(d):
         gen_soln(d, int(FLAGS.data_count/subdivision), FLAGS.resolution, FLAGS.mesh_resolution, use_hires=FLAGS.use_hires)
@@ -29,13 +26,10 @@ if __name__ == '__main__':
     NumProcesses = FLAGS.cpu_count
     #pool = multiprocessing.Pool(processes=NumProcesses)
     #pool = multiprocessing.Pool(processes=NumProcesses, maxtasksperchild=2)
-
     
     start_indices = [int(n*FLAGS.data_count/subdivision) for n in range(0,subdivision*FLAGS.cov_count)]
     start_indices = [FLAGS.data_start_count + n for n in start_indices]
-    
     #pool.map(sample, [d for d in start_indices])
-
 
 
     def get_progress(step, total_steps, start_time):
@@ -67,7 +61,6 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(processes=NumProcesses)
 
         num_tasks = subdivision*FLAGS.cov_count
-        #for i, _ in enumerate(pool.imap_unordered(sample, [d for d in start_indices]), 1):
         for i, _ in enumerate(pool.imap_unordered(sample, [d for d in indices]), 1):
             sys.stdout.write('\r  Progress:  {0:.1%}'.format((P*tasks_per_pool + i)/num_tasks))
             sys.stdout.flush()
@@ -77,19 +70,3 @@ if __name__ == '__main__':
         
     print('\n')
 
-
-    
-    """
-    print('\n [ Solving Systems ]\n')
-    #start_time = time.clock()
-    num_tasks = subdivision*FLAGS.cov_count
-    for i, _ in enumerate(pool.imap_unordered(sample, [d for d in start_indices]), 1):
-        if i == 1:
-            start_time = time.clock()
-            sys.stdout.write('\r  Progress:  {0:.1%}   {1:}'.format(i/num_tasks, '    [  Estimated Time  ~  N/A  ]'))
-            sys.stdout.flush()
-        else:
-            sys.stdout.write('\r  Progress:  {0:.1%}   {1:}'.format((i-1)/(num_tasks-1), get_progress(i-1, num_tasks-1, start_time)))
-            sys.stdout.flush()
-        print('\n')
-    """
