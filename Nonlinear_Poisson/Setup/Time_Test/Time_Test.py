@@ -20,7 +20,7 @@ increment = 1000
 batch_size = 250
 #batches = 4
 
-MODEL_DIR = "/home/nick/Research/Poisson/Nonlinear/Model_4-32/"
+MODEL_DIR = "/home/nick/Research/ConvPDE/Nonlinear_Poisson/Model_1/"
 SETUP_DIR = "./"
 
 data_dir = "Data/"

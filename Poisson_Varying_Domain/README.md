@@ -8,6 +8,27 @@ This problem setup consists of solving the Poisson equation with homogeneous Dir
 In particular, the domain `\Omega` and source term `f` are permitted to vary, and the convolutional network is trained to learn the mapping between these input terms and the target solution `u`.
 
 
+## File Overview
+
+#### `main.py`
+Defines
+
+#### `base_model.py`
+Defines
+
+#### `Networks/network_1.py`
+Defines
+
+#### `base_model.py`
+Defines
+
+#### `convolutional_layers.py`
+Defines
+
+#### `utils.py`
+Defines
+
+
 ## Training Model
 Once the dataset has been created following the instructions provided in `Setup/README.md`, the convolutional model can be trained via:
 

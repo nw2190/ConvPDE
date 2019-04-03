@@ -20,7 +20,7 @@ increment = 1000
 batch_size = 250
 #batches = 4
 
-MODEL_DIR = "/home/nick/Research/Poisson/Circle_Probabilistic/Model_1-32/"
+MODEL_DIR = "/home/nick/Research/ConvPDE/Poisson_Circle/Model_1/"
 SETUP_DIR = "./"
 
 data_dir = "Data/"
