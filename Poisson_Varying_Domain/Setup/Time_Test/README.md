@@ -29,12 +29,12 @@ $ ./RUN_TIME_TESTS.sh
 
 ...
 
-[ AVERAGE TIME RESULTS ]
+ [ AVERAGE TIME RESULTS ]
 
-Average FEniCS Time:            0.04490 seconds
-Average FEniCS Time (Coarse):   0.03382 seconds
+ Average FEniCS Time:            0.04490 seconds
+ Average FEniCS Time (Coarse):   0.03382 seconds
 
-Average Network Time (CPU):     0.01025 seconds
-Average Network Time (GPU):     0.00173 seconds
+ Average Network Time (CPU):     0.01025 seconds
+ Average Network Time (GPU):     0.00173 seconds
 
 ```
