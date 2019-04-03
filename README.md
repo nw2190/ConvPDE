@@ -109,10 +109,10 @@ A probabilistic training procedure can be employed by using the `--use_prob_loss
 
 ### Freezing Models
 
-Trained models can be frozen using the utility files in the `Evaluate/` subdirectories:
+Trained models can be frozen using the utility files in the `Evaluation/` subdirectories:
 
 ```console
-$ cd Poisson_Varying_Domain/Evaluate/
+$ cd Poisson_Varying_Domain/Evaluation/
 
 $ python Freeze.py --model_dir ../Model/
 ```
@@ -123,7 +123,7 @@ $ python Freeze.py --model_dir ../Model/
 Once a trained model has been frozen to a protocol buffer file, the network predictions can be compared with true solutions using the `Plot_Prediction.py` file:
 
 ```console
-$ cd Poisson_Varying_Domain/Evaluate/
+$ cd Poisson_Varying_Domain/Evaluation/
 
 $ python Plot_Prediction.py --model_dir ../Model/ --ID 1
 ```
@@ -137,7 +137,7 @@ $ python Plot_Prediction.py --model_dir ../Model/ --ID 1
 
 The network's predictive uncertainty can also be visualized by using the `--show_error` flag:
 ```console
-$ cd Poisson_Varying_Domain/Evaluate/
+$ cd Poisson_Varying_Domain/Evaluation/
 
 $ python Plot_Prediction.py --model_dir ../Model/ --ID 1 --show_error
 ```
@@ -154,7 +154,7 @@ The error plot shows the difference between the predicted and true solution alon
 The predictive uncertainty can be computed and evaluated via:
 
 ```console
-$ cd Poisson_Varying_Domain/Evaluate/
+$ cd Poisson_Varying_Domain/Evaluation/
 
 $ python Freeze.py --model_dir ../Model/
 
