@@ -159,11 +159,13 @@ $ cd Poisson_Varying_Domain/Evaluate/
 $ python Freeze.py --model_dir ../Model/
 
 $ python Compute_UQ_Bounds.py --model_dir ../Model/
-
-$ python plot_uq.py 
 ```
 
-The computed uncertainty results are stored in the `UQ_Bounds.csv` file and can be visualized using the `plot_uq.py` file.
+The computed uncertainty results are stored in the `UQ_Bounds.csv` file and can be visualized with `plot_uq.py`:
+
+```console
+$ python plot_uq.py 
+```
 
 <p align="center">
   <img width="700" src="figures/UQ_Plot.png" style="margin: auto;">
