@@ -50,5 +50,5 @@ Training is automatically resumed from the last checkpoint if any exist in the `
 The training progress can be monitored using TensorBoard:
 
 ```console
-$ tensorboard --logdir Model/logs/
+$ tensorboard --logdir Model_1/logs/
 ```

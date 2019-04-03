@@ -171,4 +171,4 @@ $ python Plot_UQ.py
   <img width="700" src="figures/UQ_Plot.png" style="margin: auto;">
 </p>
 
-Here the cumulative number of pixels falling within a specified standard deviation of the true solution values are plotted for both the training and validation datasets.  The target CDF of a one-sided normal distribution is plotted as a dashed line for reference; the agreement between the normal CDF and the observed empirical results provide evidence that the uncertainty schema is correctly capturing the uncertainty in the network predictions.
+Here the cumulative number of pixels falling within a specified standard deviation of the true solution values are plotted for both the training and validation datasets.  The target cumulative distribution function (CDF) of a one-sided normal distribution is plotted as a dashed line for reference; the agreement between the normal CDF and the observed empirical results provide evidence that the uncertainty schema is correctly capturing the uncertainty in the network predictions.

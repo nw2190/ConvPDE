@@ -4,14 +4,14 @@
 Trained models can be frozen using the utility file `Freeze.py`:
 
 ```console
-$ python Freeze.py --model_dir ../Model/
+$ python Freeze.py --model_dir ../Model_1/
 ```
 
 
 ## Plotting Predictions
 
 ```console
-$ python Plot_Prediction.py --model_dir ../Model/
+$ python Plot_Prediction.py --model_dir ../Model_1/
 ```
 
 <p align="center">
@@ -20,7 +20,7 @@ $ python Plot_Prediction.py --model_dir ../Model/
 
 
 ```console
-$ python Plot_Prediction.py --model_dir ../Model/ --show_error
+$ python Plot_Prediction.py --model_dir ../Model_1/ --show_error
 ```
 
 <p align="center">
@@ -32,7 +32,7 @@ $ python Plot_Prediction.py --model_dir ../Model/ --show_error
 ## Uncertainty Quantification Analysis
 
 ```console
-$ python Compute_UQ_Bounds.py --model_dir ../Model/
+$ python Compute_UQ_Bounds.py --model_dir ../Model_1/
 
 $ python Plot_UQ.py
 ```
@@ -46,7 +46,7 @@ $ python Plot_UQ.py
 ## Uncertainty Levels during Training
 
 ```console
-$ python Plot_Training_UQ.py --model_dir ../Model/
+$ python Plot_Training_UQ.py --model_dir ../Model_1/
 ```
 
 <p align="center">
@@ -61,7 +61,7 @@ $ python Plot_Training_UQ.py --model_dir ../Model/
 ## Class Losses
 
 ```console
-$ python Compute_Class_Losses.py --model_dir ../Model/
+$ python Compute_Class_Losses.py --model_dir ../Model_1/
 
 $ python Plot_Class_Loss.py
 ```
