@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 import tensorflow as tf
-from reader_frozen import plot_prediction, convert_time, read_data, read_mesh, read_soln
+#from reader_frozen import plot_prediction, convert_time, read_data, read_mesh, read_soln
 
 import os
 import sys
