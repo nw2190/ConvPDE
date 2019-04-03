@@ -4,7 +4,7 @@ import csv
 import os
 
 def main():
-    ID = 4
+    ID = 1
     legend_entries = []
     tfrecords_files = 32
     data_per_file = int(np.floor(100000/tfrecords_files))

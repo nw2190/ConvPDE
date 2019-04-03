@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser.add_argument("--model_dir", default="../Model/", type=str, help="Model folder to export")
     parser.add_argument("--DATA_dir", default="./Setup/", type=str, help="Folder containing dataset subdirectories")
     parser.add_argument("--default_res", default=128, type=int, help="Resolution of data")
-    parser.add_argument("--ID", default=0, type=int, help="ID to plot")
+    parser.add_argument("--ID", default=1, type=int, help="ID to plot")
     parser.add_argument("--slice_plot", default=False, action="store_true", help="Plot a slice of the prediction/solution")
     parser.add_argument("--show_error", default=False, action="store_true", help="Plot the error between the prediction and solution")
     parser.add_argument("--use_hires", default=False, action="store_true", help="Option to use high resolution data")

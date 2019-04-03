@@ -75,10 +75,10 @@ $ python Plot_Class_Loss.py
 ## Analysis of Data Counts
 
 ```console
-$ python main.py --model_dir Model-4 --data_files 4
-$ python main.py --model_dir Model-8 --data_files 8
-$ python main.py --model_dir Model-16 --data_files 16
-$ python main.py --model_dir Model-32 --data_files 32
+$ python main.py --model_dir Model_1-4  --data_files 4
+$ python main.py --model_dir Model_1-8  --data_files 8
+$ python main.py --model_dir Model_1-16 --data_files 16
+$ python main.py --model_dir Model_1-32 --data_files 32
 ```
 
 
