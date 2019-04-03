@@ -1,4 +1,4 @@
-# Poisson Equation on a Circle
+# Poisson Equation on the Unit Circle
 This problem setup consists of solving the Poisson equation with homogeneous Dirichlet boundary conditions on a fixed circle:
 
 <p align="center">
