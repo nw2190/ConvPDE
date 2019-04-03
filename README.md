@@ -23,7 +23,7 @@ Five predefined problem setups are provided for training the convolutional netwo
 * `Poisson_Circle/` - Poisson equation with the domain fixed as a unit circle
 * `Poisson_Varying_Domain/` - Poisson equation with both the domain and source term varying
 * `Nonlinear_Poisson/` - Nonlinear partial differential equation with varying domain and source term
-* `Variable_Coefficient/` - Variable coefficient elliptic differential operator with varying domain, source, and stiffness
+* `Variable_Coefficient/` - Variable coefficient differential operator with varying domain, source, and stiffness
 * `Neumann_BC/` - Poisson equation with Neumann boundary conditions with varying domain and source term
 
 
