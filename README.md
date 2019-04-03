@@ -4,7 +4,7 @@ This code provides examples for training convolutional neural networks for appro
 ### Dependencies
 * [Python](https://www.python.org/) - The code is designed to work with Python 2.7 and Python 3.5 or greater.
 * [TensorFlow](https://www.tensorflow.org/) - The software library used to implement the deep convolutional neural network in Python [[Installation]](https://www.tensorflow.org/install/).
-* [FEniCS / DOLFIN](https://bitbucket.org/fenics-project/dolfin) - The finite element solver used to generate numerical solutions to PDEs [[Installation]](https://fenicsproject.org/download/).
+* [FEniCS](https://fenicsproject.org/) / [DOLFIN](https://bitbucket.org/fenics-project/dolfin) - The finite element solver used to generate numerical solutions to PDEs [[Installation]](https://fenicsproject.org/download/).
 * [NumPy](http://www.numpy.org/) - Arrays are processed in Numpy prior to being fed as tensors into TensorFlow.
 * [SciPy](https://www.scipy.org/) - The data generation component requires Scipy to generate random variables from specialized distributions.
 * [Matplotlib](https://matplotlib.org/) - The Python package used to plot predictions and compare results with true solutions.
