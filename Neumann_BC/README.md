@@ -1,4 +1,4 @@
-# Poisson Equation on Varying Domains with Neumann BCs
+# Poisson Equation with Neumann Boundary Conditions
 This problem setup consists of solving the Poisson equation with homogeneous Neumann boundary conditions on varying domains:
 
 <p align="center">
