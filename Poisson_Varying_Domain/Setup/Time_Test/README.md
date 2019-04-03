@@ -27,4 +27,19 @@ $ ./GENERATE_DATA.sh
 
 $ ./RUN_TIME_TESTS.sh
 
+...
+...
+...
+
+
+[ AVERAGE TIME RESULTS ]
+
+Average FEniCS Time:    0.04490 seconds
+Average FEniCS Coarse:  0.03382 seconds
+
+
+Average Network Time:   0.00173 seconds
+Average Without GPU:    0.01025 seconds
+
+
 ```
