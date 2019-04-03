@@ -10,6 +10,9 @@ The NumPy arrays are then preprocessed, consolidated, and stored in the TFRecord
 
 ## File Overview
 
+#### `setup_flags.py`
+Provides options for controlling the data generation procedure.
+
 #### `CREATE_DATASET.sh`
 Convenience bash script for automatically creating and processing the dataset.
 
@@ -31,8 +34,14 @@ Solves the associated PDE systems and converts solutions into TensorFlow compati
 #### `Preprocess_Data.py`
 Removes values outside of the domain and normalizes the source term and solution arrays.
 
+#### `Write_TFRecords.py`
+Writes training and validation data to `.tfrecord` protocol buffer files.
+
 #### `Clean_XML.py`
 Removes the FEniCS `.xml` files once solutions have been generated.
+
+#### `setup_reader.py`
+Provides functions for plotting data, meshes, and solutions.
 
     
 ## Generating the Dataset

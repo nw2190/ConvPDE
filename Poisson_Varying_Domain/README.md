@@ -10,6 +10,9 @@ In particular, the domain `\Omega` and source term `f` are permitted to vary, an
 
 ## File Overview
 
+#### `flags.py`
+Provides training options and specifies hyperparameter values for the model.
+
 #### `Train_Model.sh`
 Bash script with a collection of predefined configurations available for training.
 
