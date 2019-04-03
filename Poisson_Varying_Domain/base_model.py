@@ -15,10 +15,10 @@ from utils import checkFolders, show_variables, add_suffix, backup_configs, _par
 from convolution_layers import conv2d_layer, inception_v3, transpose_conv2d_layer, transpose_inception_v3, dense_layer, factored_conv2d, upsample
 
 # Import AMSGrad optimizer
-from AMSGrad import Optimizers.AMSGrad
+from Optimizers.AMSGrad import AMSGrad
 
 # Import SGLD optimizer
-from SGLD import Optimizers.SGLD
+from Optimizers.SGLD import SGLD
 
 # Import TF Probability for SGLD optimizer
 #import tensorflow_probability as tfp
