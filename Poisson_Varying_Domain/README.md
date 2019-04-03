@@ -13,7 +13,7 @@ Once the dataset has been created following the instructions provided in `Setup/
 
 
 ```console
-$ python main.py --model_dir Model_1 --network 1 --use_prob_loss --use_inception --interpolate --training_steps 100000 
+$ python main.py --model_dir Model_1 --network 1 --use_prob_loss --training_steps 100000 
 ```
 
 Additional training flags can be passed as prescribed in the `flags.py` files in each problem subdirectory; default values for various training modes are provided in the `Train_Example.sh` bash file.  The models are indexed by integers and store checkpoints, logs, and configuration files in the `Model_*/` subdirectories.
