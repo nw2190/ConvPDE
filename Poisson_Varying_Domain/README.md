@@ -18,16 +18,16 @@ Provides training options and specifies hyperparameter values for the model.  Ke
 * `--use_prob_loss` - use the probabilistic loss function for training
 
 #### `Train_Model.sh`
-Bash script with a collection of predefined configurations available for training.  In particular, the script provides (1) probabilistic loss, (2) MSE loss, (3) MSE loss without boundary term, (4) probabilistic loss using Laplace distributions, and (5) probabilistic loss using Cauchy distributions.
+Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations using (1) probabilistic loss, (2) MSE loss, (3) MSE loss without boundary term, (4) probabilistic loss using Laplace distributions, and (5) probabilistic loss using Cauchy distributions.
 
 #### `main.py`
-Specifies the workflow for training the neural network models.
+Specifies the workflow for training the neural network models and saves final evaluation scores to `Model_1/final_losses.csv`.
 
 #### `base_model.py`
-Defines all non-architecture components of the model including the loss function as well as the training loop and network evaluation metrics.
+Defines all non-architecture components of the model including the network loss function, training procedure, and network evaluation metrics.
 
 #### `Networks/network_1.py`
-Defines the neural network architecture for the model.  In particular, this file provides the `self.encoder`, `self.decoder`, and `self.evaluate` methods used in the `base_model.py` file.
+Defines the neural network architecture for the model.  In particular, this file provides the definitions for the `self.encoder`, `self.decoder`, and `self.evaluate` methods used in the `base_model.py` file.
 
 #### `convolutional_layers.py`
 Provides custom wrappers for various network layers.
