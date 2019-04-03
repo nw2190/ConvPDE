@@ -6,7 +6,6 @@ import csv
 import sys
 import os
 import importlib
-import cv2
 
 # Import utility functions from 'utils.py' file
 from utils import checkFolders, show_variables, add_suffix, backup_configs, _parse_data, EarlyStoppingHook, get_transformations
