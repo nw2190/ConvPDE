@@ -92,7 +92,7 @@ if __name__ == '__main__':
     #print("\n\n")
     #print(" SOLVE TIMES:")
     #print(" - Total Time: %.5f" %(total_time))
-    print(" - Average Time: %.5f\n" %(average_time))
+    print("   ( Average Time: %.5f seconds )\n" %(average_time))
 
     if FLAGS.coarse_mesh:
         filename = "FEniCS_Times_Coarse.csv"
