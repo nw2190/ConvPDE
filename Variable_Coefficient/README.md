@@ -1,4 +1,4 @@
-# Variable Coefficient Operator on Varying Domains
+# Variable Coefficient Differential Operator
 This problem setup consists of solving the following variable coefficient version of the Poisson equation with homogeneous Dirichlet boundary conditions on varying domains:
 
 <p align="center">
