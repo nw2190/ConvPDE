@@ -12,10 +12,10 @@ In particular, the domain `\Omega` and source term `f` are permitted to vary, an
 
 #### `flags.py`
 Provides training options and specifies hyperparameter values for the model.  Key flags include:
-* `--training_steps`: number of training steps/iterations
-* `--learning_rate`: learning rate for Adam optimizer
-* `--dropout_rate`: dropout rate used to avoid overfitting
-* `--use_prob_loss`: use the probabilistic loss function for training
+* `--training_steps` - number of training steps/iterations
+* `--learning_rate` - learning rate for Adam optimizer
+* `--dropout_rate` - dropout rate used to avoid overfitting
+* `--use_prob_loss` - use the probabilistic loss function for training
 
 #### `Train_Model.sh`
 Bash script with a collection of predefined configurations available for training.  In particular, the script provides (1) probabilistic loss, (2) MSE loss, (3) MSE loss without boundary term, (4) probabilistic loss using Laplace distributions, and (5) probabilistic loss using Cauchy distributions.
