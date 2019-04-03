@@ -197,7 +197,10 @@ def network_times():
             #print("\n\nLoad Time: %.5f seconds" %(load_time))        
 
             print("\n")
-            print("\n [ Evaluating Network ] \n")
+            if NO_GPU:
+                print("\n [ Evaluating Network {:} ] \n".format(time_count))
+            else:
+                print("\n [ Evaluating Network (GPU) {:} ] \n".format(time_count))
             start = time.perf_counter()
             #for data_batch, mesh_batch, soln_batch in data:
             for n in range(0, batches):
@@ -247,11 +250,11 @@ def network_times():
             ltotal_time = (end - start) + load_time
             lbatch_time = ltotal_time / batches
             laverage_time = lbatch_time / batch_size
-            print("\n\n")
-            print(" SOLVE TIMES:\n")
-            print("\n - Total Time: %.5f seconds" %(ltotal_time))
-            print(" - Batch Time: %.5f seconds" %(lbatch_time))
-            print(" - Average Time: %.5f seconds\n" %(laverage_time))
+            #print("\n\n")
+            #print(" SOLVE TIMES:\n")
+            #print("\n - Total Time: %.5f seconds" %(ltotal_time))
+            #print(" - Batch Time: %.5f seconds" %(lbatch_time))
+            print("\n - Average Time: %.5f seconds\n" %(laverage_time))
 
 
             if NO_GPU:
