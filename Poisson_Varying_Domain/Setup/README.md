@@ -7,6 +7,33 @@ Each of the stored numpy arrays corresponds to a discretization of the continuou
 
 The NumPy arrays are then preprocessed, consolidated, and stored in the TFRecord format in the `Setup/DATA/` subdirectories.  An 80/20 split of the dataset is used to create training/validation sets; the training and validation indices are stored in the `Setup/DATA/t_indices.npy` and `Setup/DATA/v_indices.npy` files, respectively.
 
+
+## File Overview
+
+#### `CREATE_DATASET.sh`
+Convenience bash script for automatically creating and processing the dataset.
+
+#### `Compute_Cholesky_Factors.py` (`sample_gaussian.py`)
+Computes the Cholesky factors for the covariance matrices corresponding to Gaussian processes of various length-scales.
+
+#### `Generate_Samples.py` (`sample_gaussian.py`)
+Generates samples from the Gaussian process priors using the associated Cholesky factors.
+
+#### `Convert_Samples.py` (`sample_gaussian.py`)
+Converts the array formatted samples into the `.xml` format for FEniCS compatibility.
+
+#### `Generate_Meshes.py` (`mesh.py`)
+Generates meshes for randomized polygonal geometries.
+
+#### `Solve_Systems.py` (`solver.py`)
+Solves the associated PDE systems and converts solutions into TensorFlow compatible arrays.
+
+#### `Preprocess_Data.py`
+Removes values outside of the domain and normalizes the source term and solution arrays.
+
+#### `Clean_XML.py`
+Removes the FEniCS `.xml` files once solutions have been generated.
+
     
 ## Generating the Dataset
 The files for dataset creation are stored in the `Setup/` subdirectories for each problem setup.  Various dataset parameters (e.g. the total number of examples to create) are available in the `flags.py` files.

@@ -10,23 +10,23 @@ In particular, the domain `\Omega` and source term `f` are permitted to vary, an
 
 ## File Overview
 
+#### `Train_Model.sh`
+Bash script with a collection of predefined configurations available for training.
+
 #### `main.py`
-Defines
+Specifies the workflow for training the neural network models.
 
 #### `base_model.py`
-Defines
+Defines all non-architecture components of the model.
 
 #### `Networks/network_1.py`
-Defines
-
-#### `base_model.py`
-Defines
+Defines the neural network architecture.
 
 #### `convolutional_layers.py`
-Defines
+Provides custom wrappers for various network layers.
 
 #### `utils.py`
-Defines
+Provides the data parsing function and various utilities for training.
 
 
 ## Training Model
