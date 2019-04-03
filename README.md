@@ -5,11 +5,11 @@ This code provides examples for training convolutional neural networks for appro
 * [Python](https://www.python.org/) - The code is designed to work with Python 2.7 and Python 3.5 or greater.
 * [TensorFlow](https://www.tensorflow.org/) - Software library used to implement the deep convolutional neural network in Python [[Installation]](https://www.tensorflow.org/install/).
 * [FEniCS](https://fenicsproject.org/) / [DOLFIN](https://bitbucket.org/fenics-project/dolfin) - Finite element solver used to generate numerical solutions to PDEs [[Installation]](https://fenicsproject.org/download/).
-* [NumPy](http://www.numpy.org/) - Arrays are processed in Numpy prior to being fed as tensors into TensorFlow.
-* [SciPy](https://www.scipy.org/) - The data generation component requires Scipy to generate random variables from specialized distributions.
+* [NumPy](http://www.numpy.org/) - Arrays are processed in NumPy prior to being fed as tensors into TensorFlow.
+* [SciPy](https://www.scipy.org/) - The data generation component requires SciPy to generate random variables from specialized distributions.
 * [Matplotlib](https://matplotlib.org/) - Python package used to plot predictions and compare results with true solutions.
 * [Pillow / PIL](http://pillow.readthedocs.io/en/3.1.x/index.html) - Python package used to resize images and detect the edges/boundaries of discrete domains.
-* [OpenCV2](https://opencv.org/) - Library used for bicubic interpolation of Numpy arrays.
+* [OpenCV2](https://opencv.org/) - Library used for bicubic interpolation of NumPy arrays.
 
 ### Hardware Requirements
 * 16 GB of random access memory (RAM)
