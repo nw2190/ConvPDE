@@ -10,7 +10,7 @@ The NumPy arrays are then preprocessed, consolidated, and stored in the TFRecord
 
     
 ## Generating the Dataset
-The files for dataset creation are stored in the `Setup/` subdirectories for each problem setup.  Various dataset parameters (e.g. the total number of examples to create) are available in the `flags.py` files.
+Various dataset parameters (e.g. the total number of examples to create) are available in the `setup_flags.py` files.
 
 The predefined settings assume that 8 CPUs are available.  The Python [multiprocessing](https://docs.python.org/2/library/multiprocessing.html) package is used to parallelize the dataset creation procedures, and the CPU count can be adjusted using the `--cpu_count` flag.
 
