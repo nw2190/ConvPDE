@@ -35,14 +35,14 @@ $ tensorboard --logdir Model_1/logs/
 
 ## File Overview
 
-#### `flags.py`
+*#### `flags.py`
 Provides training options and specifies hyperparameter values for the model.  Key flags include:
 * `--training_steps` - number of training steps/iterations
 * `--learning_rate` - learning rate for Adam optimizer
 * `--dropout_rate` - dropout rate used to avoid overfitting
 * `--use_prob_loss` - use the probabilistic loss function for training
 
-#### `Train_Model.sh`
+*#### `Train_Model.sh`
 Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations for the following:
 * `1` - Probabilistic loss
 * `2` - MSE loss
