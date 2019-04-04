@@ -17,9 +17,17 @@ Once the dataset has been created following the instructions provided in `Setup/
 $ python main.py --model_dir Model_1 --network 1 --use_prob_loss --training_steps 100000 
 ```
 
-Additional training flags can be passed as prescribed in the `flags.py` files in each problem subdirectory; default values for various training modes are provided in the `Train_Example.sh` bash file.  The models are indexed by integers and store checkpoints, logs, and configuration files in the `Model_*/` subdirectories.
+Additional training flags can be passed as prescribed in the `flags.py` files in each problem subdirectory; default values for various training modes are provided in the `Train_Model.sh` bash file.  The models are indexed by integers and store checkpoints, logs, and configuration files in the `Model_*/` subdirectories.
 
-Training is automatically resumed from the last checkpoint if any exist in the `Model_*/Checkpoints/` subdirectory; these checkpoints must be deleted before retraining a model with a modified network architecture.  The automatic resume functionality can, however, be used to evaluate the current training/validation losses on the complete dataset at any point during training; to accomplish this, the training procedure is simply interrupted using the `Ctrl` + `C` command, and the `python main.py` command is run with the `--training_steps` flag set to any number less than the current step.
+
+
+Training is automatically resumed from the last checkpoint if any exist in the associated `Model_*/Checkpoints/` subdirectory; these checkpoints must be deleted before retraining any model with a modified network architecture.
+
+
+
+
+##### Checking Loss on Complete Dataset
+To evaluate the current training/validation losses on the complete dataset at any point during training, the training procedure can simply be interrupted using the `Ctrl` + `C` command, and the original `python main.py` command can be rerun with the `--training_steps` flag set to any number less than the current step.
 
 
 ### TensorBoard
@@ -51,6 +59,12 @@ Bash script with a collection of predefined configurations available for trainin
 * `3` - MSE loss without boundary term
 * `4` - Probabilistic loss using Laplace distributions
 * `5` - Probabilistic loss using Cauchy distributions
+
+
+###### *Technical Note:*
+All of the `*.sh` files provided in this repository are Bash shell scripts and must be made executable using `chmod +x *.sh` prior to execution.
+
+
 
 
 
