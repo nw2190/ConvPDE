@@ -98,7 +98,7 @@ Generates samples from the Gaussian process priors using the associated Cholesky
 Converts the array formatted samples into the `.xml` format for FEniCS compatibility.  This script uses the Python multiprocessing package to parallelize the `fast_convert_samples()` calls defined in the `sample_gaussian.py` file.
 
 
-##### `--- Generate_Meshes.py ---
+##### `--- Generate_Meshes.py ---`
 Generates meshes for randomized polygonal geometries.  This script uses the Python multiprocessing package to parallelize the `gen_mesh()` calls defined in the `mesh.py` file.
 
 
