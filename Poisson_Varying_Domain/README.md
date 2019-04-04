@@ -54,17 +54,17 @@ Provides training options and specifies hyperparameter values for the model.  Ke
 
 
 ##### `--- Train_Model.sh ---`
+**Technical Note:**
+All of the `*.sh` files provided in this repository are Bash shell scripts and must be made executable using `chmod +x *.sh` prior to execution.
+
+
+
 Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations which can be executed using the `./Train_Model.sh *` command with an integer argument `*` corresponding to one of the following setups:
 * `1` - Probabilistic loss
 * `2` - MSE loss
 * `3` - MSE loss without boundary term
 * `4` - Probabilistic loss using Laplace distributions
 * `5` - Probabilistic loss using Cauchy distributions
-
-
-**Technical Note:**
-All of the `*.sh` files provided in this repository are Bash shell scripts and must be made executable using `chmod +x *.sh` prior to execution.
-
 
 
 
