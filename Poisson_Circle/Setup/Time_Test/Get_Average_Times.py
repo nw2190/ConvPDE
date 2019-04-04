@@ -43,10 +43,10 @@ fc_times = np.array(fc_times, dtype=np.float32)
 #print(n_times)
 #print(f_times)
 
-print("\n\n\n [ AVERAGE TIME RESULTS ]")
+print("\n [ AVERAGE TIME RESULTS ]\n")
 
-print("Average FEniCS Time:\t%.5f seconds" %(np.mean(f_times)))
-print("Average FEniCS Coarse:\t%.5f seconds\n" %(np.mean(fc_times)))
+print(" Average FEniCS Time:\t\t%.5f seconds" %(np.mean(f_times)))
+print(" Average FEniCS Time (Coarse):\t%.5f seconds" %(np.mean(fc_times)))
 
-print("\nAverage Network Time:\t%.5f seconds" %(np.mean(n_times)))
-print("Average Without GPU:\t%.5f seconds\n" %(np.mean(ng_times)))
+print("\n Average Network Time (CPU):\t%.5f seconds" %(np.mean(ng_times)))
+print(" Average Network Time (GPU):\t%.5f seconds\n" %(np.mean(n_times)))
