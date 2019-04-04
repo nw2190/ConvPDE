@@ -58,7 +58,8 @@ Provides training options and specifies hyperparameter values for the model.  Ke
 
 ##### `--- Train_Model.sh ---`
 **Technical Note:**
-All of the `*.sh` files provided in this repository are Bash shell scripts and must be made executable using `chmod +x *.sh` prior to execution.
+
+All `*.sh` files provided in this repository are Bash shell scripts and must be made executable using `chmod +x *.sh`.
 
 
 
