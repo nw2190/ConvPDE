@@ -15,7 +15,7 @@ fi
 # PROBABILISTIC NETWORK
 if [ $problem -eq "1" ]
 then
-    LD_PRELOAD="${LD_PRELOAD}" python main.py --model_dir "Model_${problem}" --use_prob_loss --use_inception --factor --interpolate --regularize --training_steps 500000 --rotate --flip --use_log_implementation --no_early_stopping --no_validation_checks
+    LD_PRELOAD="${LD_PRELOAD}" python main.py --model_dir "Model_${problem}" --use_prob_loss --use_inception --factor --interpolate --regularize --training_steps 500000 --rotate --flip 
 
 # MSE NETWORK (BOUNDARY LOSS = 0.1)
 elif [ $problem -eq "2" ]

@@ -45,19 +45,17 @@ def main():
         config = tf.ConfigProto(device_count = {'GPU':0})
 
 
-    if FLAGS.no_early_stopping:
-        hooks = [tf.train.StopAtStepHook(last_step=training_steps)]
-    else:
+    if FLAGS.early_stopping:
         hooks = [tf.train.StopAtStepHook(last_step=training_steps),
                  EarlyStoppingHook(loss_name, tolerance=tolerance, stopping_step=stopping_step, start_step=start_step)]
+    else:
+        hooks = [tf.train.StopAtStepHook(last_step=training_steps)]
         
     # Initialize TensorFlow monitored training session
     with tf.train.MonitoredTrainingSession(
             config = config,
             checkpoint_dir = os.path.join(FLAGS.__dict__['model_dir'], FLAGS.__dict__['checkpoint_dir']),
             hooks = hooks,
-            #hooks = [tf.train.StopAtStepHook(last_step=training_steps),
-            #         EarlyStoppingHook(loss_name, tolerance=tolerance, stopping_step=stopping_step, start_step=start_step)],
             save_summaries_steps = None, save_summaries_secs = None, save_checkpoint_secs = None,
             save_checkpoint_steps = FLAGS.__dict__['checkpoint_step'], scaffold=scaffold) as sess:
 

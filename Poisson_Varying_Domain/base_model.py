@@ -220,7 +220,7 @@ class Model(object):
         soln_vals = tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])
         means = tf.reshape(masked_pred, [-1, self.alt_res*self.alt_res])        
 
-        if self.use_log_implementation:
+        if self.use_softplus_implementation:
 
             if self.use_laplace:
                 # LAPLACE LOSS
@@ -539,7 +539,7 @@ class Model(object):
                     vsummary  = self.sess.run(self.merged_summaries, feed_dict=fd)
                     self.vwriter.add_summary(vsummary, step); self.vwriter.flush()
 
-            if not self.no_validation_checks:
+            if self.validation_checks:
                 if step % self.evaluation_step == 0:
                     self.evaluate_validation(step)
 
