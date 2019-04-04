@@ -56,8 +56,8 @@ Provides training options and specifies hyperparameter values for the model.  Ke
 * `--use_prob_loss` - use the probabilistic loss function for training
 
 
-##### `--- Train_Model.sh ---`
-**Technical Note:**
+##### `--- Train_Model.sh ---` 
+**Technical Note:** 
 All `*.sh` files in this repository are Bash scripts and must be made executable using `chmod +x *.sh`.
 
 
