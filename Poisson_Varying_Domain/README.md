@@ -78,7 +78,7 @@ Defines all non-architecture components of the model including the network loss 
 
 
 ##### `--- Networks/network_1.py ---`
-Defines the neural network architecture for the model.  In particular, this file provides the definitions for the `self.encoder()`, `self.decoder)_`, and `self.evaluate_model()` methods used in the `base_model.py` file.
+Defines the neural network architecture for the model.  In particular, this file provides the definitions for the `self.encoder()`, `self.decoder()`, and `self.evaluate_model()` methods used in the `base_model.py` file.
 
 
 ##### `--- convolutional_layers.py ---`
