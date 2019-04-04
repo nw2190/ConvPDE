@@ -87,13 +87,13 @@ Alternative network architectures can be defined in `Network/network_*.py` files
 ### Loss Functions
 
 #### MSE Loss
-The conventional mean squared error (MSE) loss function is used by default (with `\lambda` set to `0.1`):
+The conventional mean squared error (MSE) loss function is used by default (with the loss weight `\lambda` set to `0.1`):
 
 <p align="center">
   <img width="750" src="figures/MSE_Loss.png" style="margin: auto;">
 </p>
 
-The loss weight `\lambda` for the boundary term can be modified using the `--bdry_weight` flag; in particular, specifying `--bdry_weight 0.0` will omit the boundary component of the loss calculation.
+The loss weight `\lambda` for the boundary term can also be modified using the `--bdry_weight` flag; in particular, specifying `--bdry_weight 0.0` will omit the boundary component of the loss calculation.
 
 #### Probabilistic Loss
 A probabilistic training procedure can be employed by using the `--use_prob_loss` flag.  This instructs the network to make both mean and standard deviation predictions and defines the loss function to be the negative log marginal likelihood (NLML) of the true solution values with respect the predicted statistics:
