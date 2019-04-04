@@ -9,7 +9,7 @@ In particular, the domain `\Omega` and source term `f` are permitted to vary, an
 
 
 ## Generating Data
-All of the files required for data generation are provided in the `Setup/` directory; datasets can be generated and processed by following the instructions outlined in the `Setup/README.md file`.
+All of the files required for data generation are provided in the `Setup/` directory.  The dataset for any given problem setup can be generated and processed by following the instructions outlined in the `Setup/README.md` file.
 
 
 ## Training Model
