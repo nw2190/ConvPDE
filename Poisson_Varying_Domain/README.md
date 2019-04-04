@@ -28,7 +28,7 @@ However, this does allow for training to be continued/extended at any time by is
 
 
 ##### Checking Loss on Complete Dataset
-To evaluate the current training/validation losses on the complete dataset at any point during training, the training procedure can simply be interrupted using the `Ctrl` + `C` command, and the original `python main.py` command can be rerun with the `--training_steps` flag set to any number less than the current step.
+To evaluate the current training/validation losses on the complete dataset at any point during training, the training procedure can simply be interrupted using the `Ctrl` + `C` command and the original `python main.py` command can be rerun with the `--training_steps` flag set to any number less than the current step.
 
 
 ### TensorBoard
