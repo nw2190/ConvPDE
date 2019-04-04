@@ -66,9 +66,9 @@ if __name__ == '__main__':
     
     #print('\n [ Solving Systems - %d ]\n' %(FLAGS.time_count))
     if FLAGS.coarse_mesh:
-        print('\n [ Solving Systems - FEniCS Coarse ]\n')
+        print('\n [ Solving Systems - FEniCS Coarse {:} ]\n'.format(FLAGS.time_count))
     else:
-        print('\n [ Solving Systems - FEniCS ]\n')
+        print('\n [ Solving Systems - FEniCS {:} ]\n'.format(FLAGS.time_count))
         
     for P in range(0,POOLS):
         
@@ -89,10 +89,10 @@ if __name__ == '__main__':
 
     total_time = end - start
     average_time = (end - start)/(FLAGS.cov_count*FLAGS.data_count)
-    print("\n\n")
-    print(" SOLVE TIMES:")
-    print(" - Total Time: %.5f" %(total_time))
-    print(" - Average Time: %.5f\n" %(average_time))
+    #print("\n\n")
+    #print(" SOLVE TIMES:")
+    #print(" - Total Time: %.5f" %(total_time))
+    print("   ( Average Time: %.5f seconds )\n" %(average_time))
 
     if FLAGS.coarse_mesh:
         filename = "FEniCS_Times_Coarse.csv"

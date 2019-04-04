@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 import tensorflow as tf
-from reader_frozen import plot_prediction, convert_time, read_data, read_mesh, read_soln
+#from reader_frozen import plot_prediction, convert_time, read_data, read_mesh, read_soln
 
 import os
 import sys
@@ -20,7 +20,7 @@ increment = 1000
 batch_size = 250
 #batches = 4
 
-MODEL_DIR = "/home/nick/Research/ConvPDE/Nonlinear_Poisson/Model_1/"
+MODEL_DIR = "/home/nick/Research/ConvPDE/Poisson_Circle/Model_1/"
 SETUP_DIR = "./"
 
 data_dir = "Data/"
@@ -197,7 +197,10 @@ def network_times():
             #print("\n\nLoad Time: %.5f seconds" %(load_time))        
 
             print("\n")
-            print("\n [ Evaluating Network ] \n")
+            if NO_GPU:
+                print("\n [ Evaluating Network {:} ] \n".format(time_count))
+            else:
+                print("\n [ Evaluating Network (GPU) {:} ] \n".format(time_count))
             start = time.perf_counter()
             #for data_batch, mesh_batch, soln_batch in data:
             for n in range(0, batches):
@@ -206,8 +209,8 @@ def network_times():
                 #soln_batch = soln_batches[n]
 
                 # SCALE INPUT DATA
-                #scaling_factors = np.amax(np.abs(data_batch), axis=(1,2,3))[:,np.newaxis,np.newaxis,np.newaxis]
-                #data_batch = data_batch/scaling_factors
+                scaling_factors = np.amax(np.abs(data_batch), axis=(1,2,3))[:,np.newaxis,np.newaxis,np.newaxis]
+                data_batch = data_batch/scaling_factors
 
                 sys.stdout.write("   Batch %d of %d\r" %(n+1, batches))
                 sys.stdout.flush()
@@ -221,7 +224,7 @@ def network_times():
                 })
 
                 # RESCALE OUTPUT DATA
-                #y_out = y_out * scaling_factors
+                y_out = y_out * scaling_factors
                 
                 if save_solutions:                    
                     batch_indices = [k for k in range(n*batch_size, (n+1)*batch_size)]
@@ -247,11 +250,11 @@ def network_times():
             ltotal_time = (end - start) + load_time
             lbatch_time = ltotal_time / batches
             laverage_time = lbatch_time / batch_size
-            print("\n\n")
-            print(" SOLVE TIMES:\n")
-            print("\n - Total Time: %.5f seconds" %(ltotal_time))
-            print(" - Batch Time: %.5f seconds" %(lbatch_time))
-            print(" - Average Time: %.5f seconds\n" %(laverage_time))
+            #print("\n\n")
+            #print(" SOLVE TIMES:\n")
+            #print("\n - Total Time: %.5f seconds" %(ltotal_time))
+            #print(" - Batch Time: %.5f seconds" %(lbatch_time))
+            print("   ( Average Time: %.5f seconds )\n" %(laverage_time))
 
 
             if NO_GPU:
@@ -280,5 +283,4 @@ def network_times():
 # Evaluate network on specified input data and plot prediction
 if __name__ == '__main__':
     network_times()
-
 
