@@ -42,7 +42,7 @@ Provides training options and specifies hyperparameter values for the model.  Ke
 * `--dropout_rate` - dropout rate used to avoid overfitting
 * `--use_prob_loss` - use the probabilistic loss function for training
 
-##### `--- Train_Model.sh`
+##### `--- Train_Model.sh ---`
 Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations which can be executed using the `./Train_Model.sh *` command with an integer argument `*` corresponding to one of the following setups:
 * `1` - Probabilistic loss
 * `2` - MSE loss
