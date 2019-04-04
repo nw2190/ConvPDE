@@ -65,7 +65,7 @@ $ cd Poisson_Varying_Domain/
 $ python main.py
 ```
 
-Additional training flags can be passed as prescribed in the `flags.py` files in each problem subdirectory; default values for various training modes are provided in the `Train_Example.sh` bash file.
+Additional training flags can be passed as prescribed in the `flags.py` files in each problem subdirectory; default values for various training modes are provided in the `Train_Model.sh` bash file.
 
 
 The training progress can be monitored using TensorBoard:
