@@ -196,7 +196,7 @@ def network_times():
             load_time = end - start
             #print("\n\nLoad Time: %.5f seconds" %(load_time))        
 
-            print("\n")
+            #print("\n")
             if NO_GPU:
                 print("\n [ Evaluating Network {:} ] \n".format(time_count))
             else:
