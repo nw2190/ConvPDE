@@ -28,6 +28,21 @@ $ ./GENERATE_DATA.sh
 $ ./RUN_TIME_TESTS.sh
 
 
+ [ Solving Systems - FEniCS 1 ]
+
+  Progress:  100.0%   ( Average Time: 0.04176 seconds )
+
+
+ [ Solving Systems - FEniCS 2 ]
+
+  Progress:  100.0%   ( Average Time: 0.04489 seconds )
+
+
+ [ Solving Systems - FEniCS 3 ]
+
+  Progress:  80.0%
+
+
  .
  .
  .
