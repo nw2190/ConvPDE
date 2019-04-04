@@ -62,7 +62,7 @@ Bash script with a collection of predefined configurations available for trainin
 * `5` - Probabilistic loss using Cauchy distributions
 
 
-###### *Technical Note:*
+**Technical Note:**
 All of the `*.sh` files provided in this repository are Bash shell scripts and must be made executable using `chmod +x *.sh` prior to execution.
 
 
