@@ -83,6 +83,10 @@ Provides options for controlling the data generation procedure.
 
 
 ##### `--- CREATE_DATASET.sh ---`
+**Technical Note:** 
+All `*.sh` files in this repository are Bash scripts and must be made executable using `chmod +x *.sh`.
+
+
 Convenience bash script for automatically creating and processing the dataset.
 
 
