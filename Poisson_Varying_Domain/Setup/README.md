@@ -86,23 +86,28 @@ Provides options for controlling the data generation procedure.
 Convenience bash script for automatically creating and processing the dataset.
 
 
-##### `--- Compute_Cholesky_Factors.py ---`   (`sample_gaussian.py`)
+##### `--- Compute_Cholesky_Factors.py ---`
+##### ( using `sample_gaussian.py` )
 Computes the Cholesky factors for the covariance matrices corresponding to Gaussian processes of various length-scales.
 
 
-##### `--- Generate_Samples.py ---`   (`sample_gaussian.py`)
+##### `--- Generate_Samples.py ---`   
+##### ( using `sample_gaussian.py` )
 Generates samples from the Gaussian process priors using the associated Cholesky factors.
 
 
-##### `--- Convert_Samples.py ---`   (`sample_gaussian.py`)
+##### `--- Convert_Samples.py ---`
+##### ( using `sample_gaussian.py` )
 Converts the array formatted samples into the `.xml` format for FEniCS compatibility.
 
 
-##### `--- Generate_Meshes.py ---`   (`mesh.py`)
+##### `--- Generate_Meshes.py ---`
+##### ( using `mesh.py` )
 Generates meshes for randomized polygonal geometries.
 
 
-##### `--- Solve_Systems.py ---`   (`solver.py`)
+##### `--- Solve_Systems.py ---`
+##### ( using `solver.py` )
 Solves the associated PDE systems and converts solutions into TensorFlow compatible arrays.
 
 
