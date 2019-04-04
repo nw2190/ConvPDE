@@ -35,14 +35,14 @@ $ tensorboard --logdir Model_1/logs/
 
 ## File Overview
 
-##### `./flags.py`
+##### `--- flags.py ---`
 Provides training options and specifies hyperparameter values for the model.  Key flags include:
 * `--training_steps` - number of training steps/iterations
 * `--learning_rate` - learning rate for Adam optimizer
 * `--dropout_rate` - dropout rate used to avoid overfitting
 * `--use_prob_loss` - use the probabilistic loss function for training
 
-##### `./Train_Model.sh`
+##### `--- Train_Model.sh`
 Bash script with a collection of predefined configurations available for training.  In particular, the script provides training configurations which can be executed using the `./Train_Model.sh *` command with an integer argument `*` corresponding to one of the following setups:
 * `1` - Probabilistic loss
 * `2` - MSE loss
@@ -51,18 +51,18 @@ Bash script with a collection of predefined configurations available for trainin
 * `5` - Probabilistic loss using Cauchy distributions
 
 
-##### `./main.py`
+##### `--- main.py ---`
 Specifies the workflow for training the neural network models and saves final evaluation scores to `Model_1/final_losses.csv`.
 
-##### `./base_model.py`
+##### `--- base_model.py ---`
 Defines all non-architecture components of the model including the network loss function, training procedure, and network evaluation metrics.
 
-##### `./Networks/network_1.py`
+##### `--- Networks/network_1.py ---`
 Defines the neural network architecture for the model.  In particular, this file provides the definitions for the `self.encoder`, `self.decoder`, and `self.evaluate` methods used in the `base_model.py` file.
 
-##### `./convolutional_layers.py`
+##### `--- convolutional_layers.py ---`
 Provides custom wrappers for various network layers.
 
-##### `./utils.py`
+##### `--- utils.py ---`
 Provides the data parsing function and various utilities for training.
 
