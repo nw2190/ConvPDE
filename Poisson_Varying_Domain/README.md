@@ -22,7 +22,7 @@ Additional training flags can be passed as prescribed in the `flags.py` files in
 
 
 Training is automatically resumed from the last checkpoint if any exist in the associated `Model_*/Checkpoints/` subdirectory; these checkpoints must be deleted before retraining any model with a modified network architecture.
-In particular, training can be extended after completion by issuing the original `python main.py` command with the updated step count passed using the `--training_steps` flag.
+In particular, training can be continued/extended at any time by issuing the original `python main.py` command with an updated step count passed using the `--training_steps` flag.
 
 
 
