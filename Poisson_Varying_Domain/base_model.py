@@ -220,7 +220,7 @@ class Model(object):
         soln_vals = tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])
         means = tf.reshape(masked_pred, [-1, self.alt_res*self.alt_res])        
 
-        if self.use_softplus_implementation:
+        if self.use_prob_loss and self.use_softplus_implementation:
 
             if self.use_laplace:
                 # LAPLACE LOSS
@@ -244,7 +244,7 @@ class Model(object):
 
             masked_scale = tf.nn.softplus(masked_scale)
 
-        else:
+        elif self.use_prob_loss:
             
             ###
             ###   LOG SCALE IMPLEMENTATION
@@ -274,7 +274,11 @@ class Model(object):
 
 
             masked_scale = tf.exp(masked_scale)
-        
+
+        else:
+            # MSE LOSS
+            prob_loss = 0.0
+            
         return masked_soln, masked_pred, masked_scale, interior_loss, boundary_loss, prob_loss
 
     # Compute relative losses
