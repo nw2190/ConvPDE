@@ -30,11 +30,11 @@ def add_learning_args(parser):
     parser.add_argument("--early_stopping_step", default=10000, type=int, help="Steps between early stopping checks")
     parser.add_argument("--early_stopping_tol", default=0.000025, type=float, help="Tolerance for early stopping")
     parser.add_argument("--stopping_size", default=1000, type=int, help="Batch size for early stopping checks")
-    parser.add_argument("--early_stopping", default=False, action='store_true', help="Perform early stopping checks")
+    parser.add_argument("--no_early_stopping", default=False, action='store_true', help="Omit early stopping checks")
 
     # Manual validation checks
     parser.add_argument("--evaluation_step", default=1000, type=int, help="Step count for saving evaluation loss")
-    parser.add_argument("--validation_checks", default=False, action='store_true', help="Perform validation checks")
+    parser.add_argument("--no_validation_checks", default=False, action='store_true', help="Omit validation checks")
     
     return parser
 
@@ -60,9 +60,9 @@ def add_optimizer_args(parser):
     parser.add_argument("--use_laplace", default=False, action='store_true', help="Option to Laplace distribution")
     parser.add_argument("--use_cauchy", default=False, action='store_true', help="Option to Cauchy distribution")
 
-    # Use alternative softplus implementation [default: log uncertainty scale]
-    parser.add_argument("--use_softplus_implementation", default=False, action='store_true', help="Use softplus implementation for prob loss")
-    
+    # Use alternative log implementation [default: softplus uncertainty scale]
+    parser.add_argument("--use_log_implementation", default=False, action='store_true', help="Use log implementation for prob loss")
+
     return parser
 
 

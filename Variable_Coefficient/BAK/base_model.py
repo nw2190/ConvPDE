@@ -39,6 +39,11 @@ class Model(object):
         self.plot_dir = os.path.join(self.model_dir, self.plot_dir)
 
 
+        # Create tfrecords if file does not exist
+        #if not os.path.exists(os.path.join(self.data_dir,'training.tfrecords')):
+        #    print("\n [ Creating tfrecords files ]\n")
+        #    write_tfrecords(self.data_dir)
+
         # Initialize datasets for training, validation, and early stopping checks
         self.initialize_datasets()
         
@@ -114,9 +119,12 @@ class Model(object):
     def initialize_datasets(self):
 
         # Define prefetch count
-        self.prefetch_count = 4
-        #self.prefetch_count = 10
-
+        #self.prefetch_count = 2
+        #self.prefetch_count = 4
+        #self.prefetch_count = 8
+        self.prefetch_count = 50
+        #self.prefetch_count = 100
+        
         # Specify which transformations to use for data augmentation
         self.transformations = get_transformations(self.rotate, self.flip)
 
@@ -160,7 +168,7 @@ class Model(object):
     def compute_ms_loss(self, data, pred, name=None):
 
         # Unpack solution
-        _, mesh, soln  = data
+        _, __, mesh, soln  = data
 
         pred, scale = pred
 
@@ -207,8 +215,12 @@ class Model(object):
             boundary_loss = tf.reduce_mean(tf.reduce_sum(tf.pow(boundary_pred-boundary_soln, 2), axis=[1,2])/boundary_count)
         else:
             # Compute interior/boundary losses
+            #if self.use_int_count:
             interior_loss = tf.reduce_mean(tf.reduce_sum(tf.pow(masked_pred-masked_soln, 2), axis=[1,2])/interior_count)
             boundary_loss = tf.reduce_mean(tf.reduce_sum(tf.pow(boundary_pred-boundary_soln, 2), axis=[1,2])/boundary_count)
+            #else:
+            #interior_loss = tf.reduce_mean(tf.reduce_mean(tf.pow(masked_pred-masked_soln, 2), axis=[1,2]))
+            #boundary_loss = tf.reduce_mean(tf.reduce_mean(tf.pow(boundary_pred-boundary_soln, 2), axis=[1,2]))
 
 
         # Compute negative log probability
@@ -217,64 +229,68 @@ class Model(object):
         #prob_loss = -tf.reduce_mean(mvn.log_prob(tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])))
 
         # Compute negative log probability [manually]
-        soln_vals = tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])
-        means = tf.reshape(masked_pred, [-1, self.alt_res*self.alt_res])        
+        if self.use_prob_loss:
+            soln_vals = tf.reshape(masked_soln, [-1, self.alt_res*self.alt_res])
+            means = tf.reshape(masked_pred, [-1, self.alt_res*self.alt_res])        
 
-        if self.use_softplus_implementation:
+            if self.use_log_implementation:
 
-            if self.use_laplace:
-                # LAPLACE LOSS
-                b = tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
-                prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.abs(soln_vals-means), b) - tf.log(2*b), axis=1))
+                if self.use_laplace:
+                    # LAPLACE LOSS
+                    b = tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
+                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.abs(soln_vals-means), b) - tf.log(2*b), axis=1))
 
-            elif self.use_cauchy:
-                # CAUCHY LOSS
-                gamma = tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
-                #prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * tf.multiply(gamma, 1.0 + tf.divide(tf.pow(soln_vals-means,2), tf.pow(gamma,2)))), axis=1))
-                # ALTERNATE IMPLEMENTATION
-                prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * (gamma + tf.divide(tf.pow(soln_vals-means,2), gamma)))), axis=1)
-            else:
-                # NORMAL LOSS
-                stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
-                if self.use_int_count:
-                    prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1)/interior_count)
+                elif self.use_cauchy:
+                    # CAUCHY LOSS
+                    gamma = tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
+                    #prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * tf.multiply(gamma, 1.0 + tf.divide(tf.pow(soln_vals-means,2), tf.pow(gamma,2)))), axis=1))
+                    # ALTERNATE IMPLEMENTATION
+                    prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * (gamma + tf.divide(tf.pow(soln_vals-means,2), gamma)))), axis=1)
                 else:
-                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1))
+                    # NORMAL LOSS
+                    stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
+                    if self.use_int_count:
+                        prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1)/interior_count)
+                    else:
+                        prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*stds_2) - 0.5*tf.log(2*np.pi*stds_2), axis=1))
 
 
-            masked_scale = tf.nn.softplus(masked_scale)
+                masked_scale = tf.nn.softplus(masked_scale)
 
+            else:
+
+                ###
+                ###   LOG SCALE IMPLEMENTATION
+                ###
+
+                if self.use_laplace:
+                    # LAPLACE LOSS
+                    log_b = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
+                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.abs(soln_vals-means), tf.exp(log_b)) - tf.log(2) - log_b, axis=1))
+
+                elif self.use_cauchy:
+                    # CAUCHY LOSS
+                    #log_gamma = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
+                    gamma = tf.exp(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
+                    #prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * tf.multiply(gamma, 1.0 + tf.divide(tf.pow(soln_vals-means,2), tf.pow(gamma,2)))), axis=1))
+                    # ALTERNATE IMPLEMENTATION
+                    prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * (gamma + tf.divide(tf.pow(soln_vals-means,2), gamma)))), axis=1)
+                else:
+                    # NORMAL LOSS
+                    #stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
+                    log_stds = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
+                    #stds_2 = tf.pow(tf.exp(log_stds), 2)
+                    if self.use_int_count:
+                        prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds, axis=1)/interior_count)
+                    else:
+                        prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds), axis=1)
+
+
+                masked_scale = tf.exp(masked_scale)
         else:
+            masked_scale = masked_soln
+            prob_loss = interior_loss
             
-            ###
-            ###   LOG SCALE IMPLEMENTATION
-            ###
-
-            if self.use_laplace:
-                # LAPLACE LOSS
-                log_b = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
-                prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.abs(soln_vals-means), tf.exp(log_b)) - tf.log(2) - log_b, axis=1))
-
-            elif self.use_cauchy:
-                # CAUCHY LOSS
-                #log_gamma = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
-                gamma = tf.exp(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res]))
-                #prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * tf.multiply(gamma, 1.0 + tf.divide(tf.pow(soln_vals-means,2), tf.pow(gamma,2)))), axis=1))
-                # ALTERNATE IMPLEMENTATION
-                prob_loss = tf.reduce_mean(tf.reduce_sum( tf.log( np.pi * (gamma + tf.divide(tf.pow(soln_vals-means,2), gamma)))), axis=1)
-            else:
-                # NORMAL LOSS
-                #stds_2 = tf.pow(tf.nn.softplus(tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])), 2)
-                log_stds = tf.reshape(masked_scale, [-1, self.alt_res*self.alt_res])
-                #stds_2 = tf.pow(tf.exp(log_stds), 2)
-                if self.use_int_count:
-                    prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds, axis=1)/interior_count)
-                else:
-                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds, axis=1))
-
-
-            masked_scale = tf.exp(masked_scale)
-        
         return masked_soln, masked_pred, masked_scale, interior_loss, boundary_loss, prob_loss
 
     # Compute relative losses
@@ -293,7 +309,8 @@ class Model(object):
     
     # Compute average uncertainty in predictions
     def compute_uncertainty(self, data, scale):
-        _, mesh, __ = data
+        #_, mesh, __ = data
+        _, __, mesh, ___ = data
         interior_indices = tf.greater(mesh, 0)
         interior_count = tf.reduce_sum(tf.cast(interior_indices, np.float32), axis=[1,2])
         uq = tf.reduce_mean(tf.reduce_sum(scale, axis=[1,2])/interior_count)
@@ -427,9 +444,10 @@ class Model(object):
 
         # Define placeholders for directly feeding data for manual testing
         tdata = tf.placeholder(tf.float32, [None, None, None, 1], name='data_test')
+        tcoeff = tf.placeholder(tf.float32, [None, None, None, 1], name='coeff_test')
         tmesh = tf.placeholder(tf.float32, [None, None, None, 1], name='mesh_test')
         tsoln = tf.placeholder(tf.float32, [None, None, None, 1], name='soln_test')
-        test_soln, test_pred, test_scale, _, __, ____, _____ = self.evaluate_model(self, [tdata, tmesh, tsoln], reuse=True, training=tf_false, suffix="_test")
+        test_soln, test_pred, test_scale, _, __, ____, _____ = self.evaluate_model(self, [tdata, tcoeff, tmesh, tsoln], reuse=True, training=tf_false, suffix="_test")
 
         
     # Train model
@@ -514,9 +532,9 @@ class Model(object):
                 break
 
             # Plot predictions
-            if step % self.plot_step == 0:
-                #self.plot_comparisons(step)
-                self.plot_data(step, handle=self.training_handle)
+            #if step % self.plot_step == 0:
+            #    #self.plot_comparisons(step)
+            #    self.plot_data(step, handle=self.training_handle)
 
             # Break if early stopping hook requests stop after sess.run()
             if self.sess.should_stop():
@@ -539,7 +557,7 @@ class Model(object):
                     vsummary  = self.sess.run(self.merged_summaries, feed_dict=fd)
                     self.vwriter.add_summary(vsummary, step); self.vwriter.flush()
 
-            if self.validation_checks:
+            if not self.no_validation_checks:
                 if step % self.evaluation_step == 0:
                     self.evaluate_validation(step)
 
@@ -571,12 +589,14 @@ class Model(object):
         fd = {self.dataset_handle: handle, self.z: np.zeros([self.batch_size, self.z_dim]),
               self.training: False, self.kl_wt: self.kl_weight}
         in_data, msoln, pred =  self.sess.run([self.data, self.masked_soln, self.masked_pred], feed_dict=fd)
-        data, mesh, soln = in_data
+        data, coeff, mesh, soln = in_data
         for n in range(0, self.batch_size):
             soln_name = 'soln_' + str(n) + '.npy'; data_name = 'data_' + str(n) + '.npy'; mesh_name = 'mesh_' + str(n) + '.npy'
             msoln_name = 'msoln_' + str(n) + '.npy'; pred_name = 'pred_' + str(n) + '.npy'
+            coeff_name = 'coeff_' + str(n) + '.npy'
             np.save(os.path.join(plot_subdir, soln_name), soln[n,:,:,0])
             np.save(os.path.join(plot_subdir, data_name), data[n,:,:,0])
+            np.save(os.path.join(plot_subdir, coeff_name), coeff[n,:,:,0])
             np.save(os.path.join(plot_subdir, mesh_name), mesh[n,:,:,0])
             np.save(os.path.join(plot_subdir, msoln_name), msoln[n,:,:,0])
             np.save(os.path.join(plot_subdir, pred_name), pred[n,:,:,0])

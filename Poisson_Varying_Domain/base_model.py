@@ -270,7 +270,7 @@ class Model(object):
                 if self.use_int_count:
                     prob_loss = -tf.reduce_sum(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds, axis=1)/interior_count)
                 else:
-                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds), axis=1)
+                    prob_loss = -tf.reduce_mean(tf.reduce_sum(-tf.divide(tf.pow(soln_vals-means,2), 2*tf.pow(tf.exp(log_stds), 2)) - 0.5*tf.log(2*np.pi) - 0.5*2.*log_stds, axis=1))
 
 
             masked_scale = tf.exp(masked_scale)

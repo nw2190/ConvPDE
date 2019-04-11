@@ -62,7 +62,7 @@ def add_optimizer_args(parser):
 
     # Use alternative softplus implementation [default: log uncertainty scale]
     parser.add_argument("--use_softplus_implementation", default=False, action='store_true', help="Use softplus implementation for prob loss")
-    
+
     return parser
 
 
