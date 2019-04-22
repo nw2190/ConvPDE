@@ -72,3 +72,56 @@ along with the preprocessed dataset example written to TFRecords files in the `.
 
 **Note:** The `Cholesky/` files can be reused for all five problem setups (e.g. using symbolic links).  
 
+
+
+
+
+## File Overview
+
+##### `--- setup_flags.py ---`
+Provides options for controlling the data generation procedure.
+
+
+##### `--- CREATE_DATASET.sh ---`
+**Technical Note:** 
+All `*.sh` files in this repository are Bash scripts and must be made executable using `chmod +x *.sh`.
+
+
+Convenience bash script for automatically creating and processing the dataset.
+
+
+##### `--- Compute_Cholesky_Factors.py ---`
+Computes the Cholesky factors for the covariance matrices corresponding to Gaussian processes of various length-scales.  This script uses the Python multiprocessing package to parallelize the `generate_covariance()` calls defined in the `sample_gaussian.py` file.
+
+
+##### `--- Generate_Samples.py ---`
+Generates samples from the Gaussian process priors using the associated Cholesky factors.  This script uses the Python multiprocessing package to parallelize the `sample_gaussian()` calls defined in the `sample_gaussian.py` file.
+
+
+##### `--- Convert_Samples.py ---` 
+Converts the array formatted samples into the `.xml` format for FEniCS compatibility.  This script uses the Python multiprocessing package to parallelize the `fast_convert_samples()` calls defined in the `sample_gaussian.py` file.
+
+
+##### `--- Generate_Meshes.py ---`
+Generates meshes for randomized polygonal geometries.  This script uses the Python multiprocessing package to parallelize the `gen_mesh()` calls defined in the `mesh.py` file.
+
+
+##### `--- Solve_Systems.py ---` 
+Solves the associated PDE systems and converts solutions into TensorFlow compatible arrays.  This script uses the Python multiprocessing package to parallelize the `gen_soln()` calls defined in the `solver.py` file.
+
+
+##### `--- Preprocess_Data.py ---`
+Removes values outside of the domain and normalizes the source term and solution arrays.
+
+
+##### `--- Write_TFRecords.py ---`
+Writes training and validation data to `.tfrecord` protocol buffer files.
+
+
+##### `--- Clean_XML.py ---`
+Removes the FEniCS `.xml` files once solutions have been generated.
+
+
+##### `--- setup_reader.py ---`
+Provides functions for plotting data, meshes, and solutions.
+
