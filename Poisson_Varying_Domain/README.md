@@ -43,8 +43,6 @@ $ tensorboard --logdir Model_1/logs/
 ```
 
 
-
-
 ## File Overview
 
 

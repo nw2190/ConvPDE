@@ -76,9 +76,6 @@ Bash script with a collection of predefined configurations available for trainin
 * `1` - Probabilistic loss
 * `2` - MSE loss
 * `3` - MSE loss without boundary term
-* `4` - Probabilistic loss using Laplace distributions
-* `5` - Probabilistic loss using Cauchy distributions
-
 
 
 
