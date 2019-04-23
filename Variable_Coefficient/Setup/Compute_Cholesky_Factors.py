@@ -60,8 +60,7 @@ if __name__ == '__main__':
         #print([d for d in zip(filenames, length_scales)])
         #pool.map(gen_cov, [d for d in zip(filenames, length_scales)])
         #num_tasks = FLAGS.cov_count
-        #for i, _ in enumerate(pool.imap_unordered(gen_cov, [d for d in zip(filenames, length_scales)]), 1):
-        for i, _ in enumerate(pool.imap_unordered(gen_cov, [d for d in zip(files, indices)]), 1):
+        for i, _ in enumerate(pool.imap_unordered(gen_cov, [d for d in zip(files, length_scales)]), 1):
             sys.stdout.write('\r  Progress:  {0:.1%}'.format((P*tasks_per_pool + i)/num_tasks))
             sys.stdout.flush()
             
