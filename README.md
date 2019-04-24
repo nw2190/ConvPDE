@@ -1,4 +1,8 @@
-# Convolutional Solvers for PDEs
+Convolutional Solvers for PDEs
+====================
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 This code provides examples for training convolutional neural networks for approximating the solutions to partial differential equations.  These networks are designed to approximate solvers for complete families of differential equations, following the framework of fundamental solutions and Green's functions which provide the basis and underlying theory for the models.
 
 ### Dependencies
