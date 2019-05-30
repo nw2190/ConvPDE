@@ -28,7 +28,7 @@ sudo systemctl start docker
 Change to the `ConvPDE` directory and run the `fenicsproject` container:
 ```
 cd ~/git/ConvPDE/
-sudo docker run --env HTTP_PROXY="http://wwwproxy.sandia.gov:80" --env HTTPS_PROXY="http://wwwproxy.sandia.gov:80" -ti -v $(pwd):/home/fenics/shared:z quay.io/fenicsproject/stable 
+sudo docker run --env HTTP_PROXY="[proxy]" --env HTTPS_PROXY="[proxy]" -ti -v $(pwd):/home/fenics/shared:z quay.io/fenicsproject/stable 
 ```
 
 Install `pypng` package for edge detection in mesh generation procedure:
