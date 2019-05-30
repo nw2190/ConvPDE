@@ -2,7 +2,7 @@
 
 ## Arch Linux
 
-Download package from AUR package `[dolfin](https://aur.archlinux.org/packages/dolfin/)`.
+Download package from AUR package [dolfin](https://aur.archlinux.org/packages/dolfin/).
 
 
 ## Red Hat Enterprise Linux
