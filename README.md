@@ -11,6 +11,7 @@ This code provides examples for training convolutional neural networks for appro
 * [FEniCS](https://fenicsproject.org/) / [DOLFIN](https://bitbucket.org/fenics-project/dolfin) - Finite element solver used to generate numerical solutions to PDEs [[Installation]](https://fenicsproject.org/download/).
 * [NumPy](http://www.numpy.org/) - Arrays are processed in NumPy prior to being fed as tensors into TensorFlow.
 * [SciPy](https://www.scipy.org/) - The data generation component requires SciPy to generate random variables from specialized distributions.
+* [SymPy](https://www.sympy.org/en/index.html) - Used for symbolic calculations (must be version 1.1; e.g. `pip install sympy=='1.1'`)
 * [Matplotlib](https://matplotlib.org/) - Python package used to plot predictions and compare results with true solutions.
 * [Pillow / PIL](http://pillow.readthedocs.io/en/3.1.x/index.html) - Python package used to resize images and detect the edges/boundaries of discrete domains.
 * [OpenCV2](https://opencv.org/) - Library used for bicubic interpolation of NumPy arrays.

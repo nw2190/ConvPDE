@@ -15,7 +15,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import scipy
 from scipy.spatial.distance import pdist, squareform
 from scipy.interpolate import interp2d
-import cv2
+#import cv2
 
 
 """
@@ -259,6 +259,7 @@ def fast_convert_samples(data_count, current_data, resolution=64, use_hires=Fals
         data_function_filename = './Data/data_' + str(n) + '.xml'
         File(data_function_filename) << f
 
+        """
         if use_hires:
             ## Save hi-res data array
             new_resolution = 2*resolution
@@ -266,3 +267,4 @@ def fast_convert_samples(data_count, current_data, resolution=64, use_hires=Fals
             resized_array = cv2.resize(data_array, (new_resolution, new_resolution), interpolation = cv2.INTER_CUBIC) 
             hires_filename = './Data/hires_data_' + str(n) + '.npy'
             np.save(hires_filename, resized_array)
+        """

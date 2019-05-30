@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Specify thread cacheing memory allocation preloader if applicable
-LD_PRELOAD="/usr/lib/libtcmalloc.so.4"
+#LD_PRELOAD="/usr/lib/libtcmalloc.so.4"
+LD_PRELOAD=" "
 
 # Check if an argument has been provided for specifying the model number
 if ! [ ${#1} -gt 0 ]

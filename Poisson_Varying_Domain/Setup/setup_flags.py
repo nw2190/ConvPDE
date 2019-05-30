@@ -27,7 +27,8 @@ def getFlags():
 
     # Specify parameters for dataset creation
     parser.add_argument("--cov_count", default=20, type=int, help="Number of covariance matrices")
-    parser.add_argument("--data_count", default=2500, type=int, help="Number of data samples for each covariance matrix")
+    #parser.add_argument("--data_count", default=2500, type=int, help="Number of data samples for each covariance matrix")
+    parser.add_argument("--data_count", default=200, type=int, help="Number of data samples for each covariance matrix")
     #parser.add_argument("--resolution", default=64, type=int, help="Resolution for data files")
     #parser.add_argument("--resolution", default=100, type=int, help="Resolution for data files")
     parser.add_argument("--resolution", default=128, type=int, help="Resolution for data files")
