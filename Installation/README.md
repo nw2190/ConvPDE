@@ -30,6 +30,8 @@ Change to the `ConvPDE` directory and run the `fenicsproject` container:
 cd ~/git/ConvPDE/
 sudo docker run --env HTTP_PROXY="[proxy]" --env HTTPS_PROXY="[proxy]" -ti -v $(pwd):/home/fenics/shared:z quay.io/fenicsproject/stable 
 ```
+where `[proxy]` corresponds to the environment variable `HTTP_PROXY` (which can be displayed via `echo $HTTP_PROXY`).
+
 
 Install `pypng` package for edge detection in mesh generation procedure:
 ```
