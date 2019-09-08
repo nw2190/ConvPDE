@@ -46,6 +46,12 @@ $ yaourt -S python-dolfin
 $ yaourt -S python-mshr    
 ```
 
+
+### Install TensorFlow
+```console
+sudo pacman -S tensorflow python-tensorflow tensorboard
+```
+
 Also, if the PyPng package is not already installed, it can be installed via:
 ```console
 $ sudo pip install pypng
