@@ -2,7 +2,7 @@
 
 # Specify whether a virtual environment should be
 # used for writing the dataset to TFRecords files 
-VENV=1
+VENV=0
 venv_command="source /home/nick/Documents/virtual_envs/tf/bin/activate"
 
 # Specify whether the Cholesky factors must be recomputed
