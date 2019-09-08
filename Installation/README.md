@@ -2,7 +2,51 @@
 
 ## Arch Linux
 
-Download package from AUR: [dolfin](https://aur.archlinux.org/packages/dolfin/).
+
+### Install yaourt
+
+```console
+$ sudo pacman -S --needed base-devel git wget yajl
+$ git clone https://aur.archlinux.org/package-query.git
+$ cd package-query/
+$ makepkg -si
+$ cd ..
+$ git clone https://aur.archlinux.org/yaourt.git
+$ cd yaourt/
+$ makepkg -si
+```
+
+### Install SymPy with Version < 1.2
+```console
+$ wget https://archive.archlinux.org/packages/p/python-sympy/python-sympy-1.1.1-1-any.pkg.tar.xz
+$ sudo mv python-sympy-1.1.1-1-any.pkg.tar.xz /var/cache/pacman/pkg/
+$ sudo pacman -U /var/cache/pacman/pkg/python-sympy-1.1.1-1-any.pkg.tar.xz
+$ sudo cp -rf /usr/lib/python3.6/site-packages/sympy-1.1.1-py3.6.egg-info /usr/lib/python3.7/
+$ sudo cp -rf /usr/lib/python3.6/site-packages/sympy /usr/lib/python3.7/
+```
+Also be sure to add SymPy to the `IgnorePkg` list in `/etc/pacman.conf`.
+```
+IgnorePkg  =  python-sympy    
+```
+
+### Install FEniCS Packages
+Install Dolfin from AUR via:
+```console
+$ yaourt -S dolfin
+```
+Check the final ouput of the installation and identify the file that should be sourced:
+```console
+source /usr/share/dolfin/dolfin.conf
+```
+This command should then be included in the `.bashrc` file to make the environment variable changes persistent.
+
+Finally, install the Python packages:
+```console
+$ yaourt -S python-dolfin
+$ yaourt -S python-mshr    
+```
+
+
 
 
 ## Red Hat Enterprise Linux
