@@ -46,6 +46,10 @@ $ yaourt -S python-dolfin
 $ yaourt -S python-mshr    
 ```
 
+Also, if the PyPng package is not already installed, it can be installed via:
+```console
+$ sudo pip install pypng
+```
 
 
 
